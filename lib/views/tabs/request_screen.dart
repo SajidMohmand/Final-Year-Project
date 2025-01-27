@@ -1,13 +1,54 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../models/lawyer.dart';
+import '../../providers/lawyer_provider.dart';
 import './request/apply_for_request_screen.dart';
 
 class RequestScreen extends StatelessWidget {
+  final requestProvider = Provider.of<RequestProvider>(context);
+  final requests = requestProvider.requests;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
+      body: requests.isNotEmpty
+          ? ListView.builder(
+        padding: EdgeInsets.all(16),
+        itemCount: requests.length,
+        itemBuilder: (context, index) {
+          final request = requests[index];
+          return Card(
+            elevation: 4,
+            margin: EdgeInsets.symmetric(vertical: 8),
+            child: ListTile(
+              title: Text(
+                request.lawyerName,
+                style:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Issue: ${request.issue}"),
+                  Text("Details: ${request.details}"),
+                ],
+              ),
+              trailing: Icon(Icons.arrow_forward_ios, size: 18),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ApplyForRequestScreen(request.lawyerId),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      )
+          :Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -73,212 +114,13 @@ class RequestScreen extends StatelessWidget {
   }
 }
 
-class LawyerListScreen extends StatefulWidget {
-  @override
-  _LawyerListScreenState createState() => _LawyerListScreenState();
-}
-
-class _LawyerListScreenState extends State<LawyerListScreen> {
-  final List<Map<String, String>> lawyers = [
-    {
-      "name": "John Doe",
-      "domain": "Cyber Harassment",
-      "image": "assets/images/lawyer1.png",
-      "rating": "4.5"
-    },
-    {
-      "name": "Jane Smith",
-      "domain": "Cyber Harassment",
-      "image": "assets/images/lawyer2.png",
-      "rating": "4.7"
-    },
-    {
-      "name": "Michael Johnson",
-      "domain": "Family Law",
-      "image": "assets/images/lawyer3.png",
-      "rating": "4.6"
-    },
-    {
-      "name": "Capital Johnson",
-      "domain": "Family Law",
-      "image": "assets/images/lawyer4.png",
-      "rating": "4.0"
-    },
-    {
-      "name": "Alice Brown",
-      "domain": "Business Law",
-      "image": "assets/images/lawyer1.png",
-      "rating": "4.2"
-    },
-  ];
-
-  List<Map<String, String>> filteredLawyers = [];
-
-  @override
-  void initState() {
-    super.initState();
-    filteredLawyers = lawyers;
-  }
-
-  void filterLawyers(String query) {
-    setState(() {
-      filteredLawyers = lawyers.where((lawyer) {
-        bool match = (lawyer["domain"]?.toLowerCase() ?? '')
-                .contains(query.toLowerCase()) ||
-            (lawyer["name"]?.toLowerCase() ?? '').contains(query.toLowerCase());
-        return match;
-      }).toList();
-    });
-  }
-
-  void showProfileDetail(Map<String, String> lawyer) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.brown.shade100,
-          title: Text(
-            "Lawyer Details",
-            style: TextStyle(fontSize: 12, color: Color(0xFF6F7977)),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Display the profile image and the lawyer's name side by side
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30, // Reduced the image size here
-                      backgroundImage: AssetImage(lawyer["image"]!),
-                    ),
-                    SizedBox(width: 10), // Space between image and name
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          lawyer["name"]!,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Text(lawyer["domain"]!, style: TextStyle(fontSize: 16)),
-                        Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.amber, size: 18),
-                            SizedBox(width: 4),
-                            Text(
-                              lawyer["rating"]!,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 10),
-                // Divider line
-                Divider(color: Colors.black),
-
-                SizedBox(height: 10),
-
-                // Three buttons at the bottom: Chat, View Profile, Apply for Request
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // Chat button with border
-                    OutlinedButton(
-
-                      onPressed: () {
-                        // Action for 'Chat' button
-                        Navigator.pop(context); // Close the dialog
-                        print("Chat with ${lawyer["name"]}");
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.brown.shade700), // Border color
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10), // Padding inside the button
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7), // Less rounded corners
-                        ),
-                        backgroundColor: Colors.brown,
-                      ),
-                      child: Text(
-                        "Chat",
-                        style: TextStyle(color: Colors.white), // Text color to match the border
-                      ),
-                    ),
-
-                    SizedBox(width: 10),
-
-                    // View Complete Profile button with border
-                    OutlinedButton(
-                      onPressed: () {
-                        // Action for 'See Complaint Profile' button
-                        Navigator.pop(context); // Close the dialog
-                        print("See complaint profile of ${lawyer["name"]}");
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.brown.shade700), // Border color
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10), // Padding inside the button
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7), // Less rounded corners
-                        ),
-                        backgroundColor: Colors.brown,
-                      ),
-                      child: Text(
-                        "View Complete Profile",
-                        style: TextStyle(color: Colors.white), // Text color to match the border
-                      ),
-                    ),
-
-
-                  ],
-                ),
-                SizedBox(height: 10),
-
-                // New Apply for Request button with border
-                Align(
-                  alignment: Alignment.center,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ApplyForRequestScreen(),
-                        ),
-                      );
-                    },
-
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.brown.shade700), // Border color
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10), // Padding inside the button
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7), // Less rounded corners
-                      ),
-                      backgroundColor: Colors.brown,
-                    ),
-                    child: Text(
-                      "Apply for Request",
-                      style: TextStyle(color: Colors.white), // Text color to match the border
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
+class LawyerListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Get the list of filtered lawyers from the provider
+    final lawyerProvider = Provider.of<LawyerProvider>(context);
+    final lawyers = lawyerProvider.filteredLawyers;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Select Lawyers"),
@@ -288,7 +130,10 @@ class _LawyerListScreenState extends State<LawyerListScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
-              onChanged: filterLawyers,
+              onChanged: (query) {
+                // Call the filterLawyers method when the search text changes
+                lawyerProvider.filterLawyers(query);
+              },
               decoration: InputDecoration(
                 labelText: "Search Lawyers",
                 border: OutlineInputBorder(),
@@ -307,62 +152,127 @@ class _LawyerListScreenState extends State<LawyerListScreen> {
             ),
           ),
           Expanded(
-            child: filteredLawyers.isNotEmpty
+            child: lawyers.isNotEmpty
                 ? ListView.builder(
-                    itemCount: filteredLawyers.length,
-                    itemBuilder: (context, index) {
-                      final lawyer = filteredLawyers[index];
-                      return Card(
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: AssetImage(lawyer["image"]!),
-                          ),
-                          title: Text(
-                            lawyer["name"]!,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                lawyer["domain"]!,
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[700]),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(Icons.star,
-                                      color: Colors.amber, size: 18),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    lawyer["rating"]!,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          onTap: () =>
-                              showProfileDetail(lawyer), // Show popup on tap
-                        ),
-                      );
-                    },
-                  )
-                : Center(
-                    child: Text(
-                      "No matches found.",
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey),
+              itemCount: lawyers.length,
+              itemBuilder: (context, index) {
+                final lawyer = lawyers[index];
+                return Card(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: AssetImage(lawyer.image),
                     ),
+                    title: Text(
+                      lawyer.name,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          lawyer.domain,
+                          style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber, size: 18),
+                            SizedBox(width: 4),
+                            Text(
+                              lawyer.rating,
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Show the profile details dialog
+                      showProfileDetail(context, lawyer);
+                    },
                   ),
+                );
+              },
+            )
+                : Center(
+              child: Text(
+                "No matches found.",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+              ),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  // Show the profile detail dialog
+  void showProfileDetail(BuildContext context, Lawyer lawyer) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Lawyer Details"),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(radius: 30, backgroundImage: AssetImage(lawyer.image)),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(lawyer.name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text(lawyer.domain, style: TextStyle(fontSize: 16)),
+                        Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber, size: 18),
+                            SizedBox(width: 4),
+                            Text(lawyer.rating, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Divider(color: Colors.black),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Chat"),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("View Complete Profile"),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                OutlinedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ApplyForRequestScreen(lawyer.id),
+                      ),
+                    );
+                  },
+                  child: Text("Apply for Request"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

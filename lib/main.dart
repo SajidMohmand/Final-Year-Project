@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fyp2/providers/form_provider.dart';
+import 'package:fyp2/providers/lawyer_provider.dart';
 import 'package:provider/provider.dart';
 import 'views/splash_screen.dart';
 import 'providers/slider_provider.dart';
@@ -10,6 +12,8 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (context) => SliderProvider()),
         ChangeNotifierProvider(create: (context) => RegisterProvider()),
+        ChangeNotifierProvider(create: (_) => LawyerProvider()),
+        ChangeNotifierProvider(create: (context) => FormProvider()),
       ],
       child: MyApp(),
     ),

@@ -4,6 +4,7 @@ import 'package:fyp2/providers/lawyer_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/form_provider.dart';
+import '../../../providers/request_provider.dart';
 import '../request_screen.dart';
 
 class CaseDetailOverviewScreen extends StatelessWidget {
@@ -77,6 +78,15 @@ class CaseDetailOverviewScreen extends StatelessWidget {
             // Save form details in provider
             Provider.of<FormProvider>(context, listen: false)
                 .saveFormDetails(name, phone, issue, details);
+
+            // Save form details in provider
+            Provider.of<FormProvider>(context, listen: false)
+                .saveFormDetails(name, phone, issue, details);
+
+            final lawyer = Provider.of<LawyerProvider>(context,listen: false).getLawyerById(id);
+            // Add the request to the RequestProvider
+            Provider.of<RequestProvider>(context, listen: false).addRequest(name, phone, issue, details,lawyer!);
+
 
             // Show confirmation popup
             showDialog(

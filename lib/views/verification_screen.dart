@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'home_screen.dart';
 
 class VerificationScreen extends StatefulWidget {
@@ -11,7 +10,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
   List<TextEditingController> controllers =
   List.generate(4, (index) => TextEditingController());
   List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
-  int currentIndex = 0; // Tracks the current active OTP field
+  int currentIndex = 0;
   bool _agreedToTerms = false;
 
   @override
@@ -44,7 +43,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
       });
 
       if (controllers.every((controller) => controller.text.isNotEmpty)) {
-        _verifyCode(); // Auto-submit when all fields are filled
+        _verifyCode();
       }
     }
   }
@@ -52,7 +51,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
   void _verifyCode() {
     String otpCode = controllers.map((controller) => controller.text).join();
     print("Entered OTP: $otpCode");
-    // Add verification logic here (API call or local validation)
     _showTermsDialog();
   }
 
@@ -61,7 +59,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        bool agreedToTerms = _agreedToTerms; // Local state inside dialog
+        bool agreedToTerms = _agreedToTerms;
 
         return StatefulBuilder(
           builder: (context, setDialogState) {
@@ -80,8 +78,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     children: [
                       Checkbox(
                         value: agreedToTerms,
-                        activeColor: Colors.brown, // Brown when checked
-                        checkColor: Colors.white, // White checkmark
+                        activeColor: Colors.brown,
+                        checkColor: Colors.white,
                         onChanged: (value) {
                           setDialogState(() {
                             agreedToTerms = value ?? false;
@@ -110,7 +108,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   onPressed: agreedToTerms
                       ? () {
                     setState(() {
-                      _agreedToTerms = agreedToTerms; // Update main state
+                      _agreedToTerms = agreedToTerms;
                     });
                     Navigator.pop(context);
                     Navigator.pushReplacement(
@@ -163,7 +161,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 SizedBox(width: 10),
                 GestureDetector(
                   onTap: () {
-                    // Resend the verification code logic
                   },
                   child: Text("Resend",
                       style: TextStyle(
@@ -175,7 +172,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
             ),
             SizedBox(height: 20),
 
-            /// OTP Input Fields
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: List.generate(4, (index) => _buildCodeField(index)),
@@ -183,7 +179,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
             SizedBox(height: 30),
 
-            /// Custom Number Pad
             _buildNumberPad(),
           ],
         ),
@@ -199,10 +194,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
       child: TextField(
         controller: controllers[index],
         focusNode: focusNodes[index],
-        keyboardType: TextInputType.none, // Disable keyboard
+        keyboardType: TextInputType.none,
         textAlign: TextAlign.center,
         maxLength: 1,
-        readOnly: true, // Make it read-only to prevent keyboard input
+        readOnly: true,
         decoration: InputDecoration(
           counterText: "",
           border: UnderlineInputBorder(

@@ -55,12 +55,11 @@ class LawyerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Method to get lawyer by ID
   Lawyer? getLawyerById(String id) {
     return _lawyers.firstWhere(
           (lawyer) => lawyer.id == id,
       orElse: () => Lawyer(
-        id: "", // Return a default lawyer or handle null properly
+        id: "",
         name: "Unknown",
         domain: "Not Available",
         image: "assets/images/lawyer1.png",

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/form_provider.dart';
 import '../../../providers/request_provider.dart';
-import '../request_screen.dart';
 
 class CaseDetailOverviewScreen extends StatelessWidget {
 
@@ -32,7 +31,7 @@ class CaseDetailOverviewScreen extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: Colors.brown.withValues(alpha: 0.1), // Adding brown background with low opacity
+                color: Colors.brown.withValues(alpha: 0.1),
               ),
               child: SingleChildScrollView(
                 child: Padding(
@@ -40,15 +39,12 @@ class CaseDetailOverviewScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Lawyer Profile Section
                       _buildLawyerProfile(lawyer!),
                       SizedBox(height: 20),
             
-                      // Divider
                       Divider(thickness: 1, color: Colors.grey),
                       SizedBox(height: 20),
             
-                      // Form Details
                       _buildFormDetails(),
             
                       SizedBox(height: 30),
@@ -75,29 +71,25 @@ class CaseDetailOverviewScreen extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 25),
         child: ElevatedButton(
           onPressed: () {
-            // Save form details in provider
             Provider.of<FormProvider>(context, listen: false)
                 .saveFormDetails(name, phone, issue, details);
 
-            // Save form details in provider
             Provider.of<FormProvider>(context, listen: false)
                 .saveFormDetails(name, phone, issue, details);
 
             final lawyer = Provider.of<LawyerProvider>(context,listen: false).getLawyerById(id);
-            // Add the request to the RequestProvider
             Provider.of<RequestProvider>(context, listen: false).addRequest(name, phone, issue, details,lawyer!);
 
 
-            // Show confirmation popup
             showDialog(
               context: context,
               builder: (BuildContext dialogContext) {
                 Future.delayed(Duration(seconds: 2), () {
                   if (dialogContext.mounted) {
-                    Navigator.of(dialogContext).pop(); // Close the dialog
+                    Navigator.of(dialogContext).pop();
                   }
                   if (context.mounted) {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pop();
 
                       if (context.mounted) {
                         for(int i=0; i<3; i++){
@@ -112,9 +104,9 @@ class CaseDetailOverviewScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   content: Container(
-                    width: MediaQuery.of(context).size.width * 0.9, // 90% of screen width
+                    width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
-                      color: Colors.brown[100], // Light brown background
+                      color: Colors.brown[100],
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: EdgeInsets.all(20),
@@ -132,7 +124,7 @@ class CaseDetailOverviewScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  backgroundColor: Colors.transparent, // Make AlertDialog transparent
+                  backgroundColor: Colors.transparent,
                 );
               },
             );
@@ -216,7 +208,7 @@ class CaseDetailOverviewScreen extends StatelessWidget {
         _buildDetailRow("Name", name),
         _buildDetailRow("Phone Number", phone),
         _buildDetailRow("Cyber Issue", issue),
-        _buildIncidentDetailRow("Incident Details", details),  // Updated styling for incident details
+        _buildIncidentDetailRow("Incident Details", details),
       ],
     );
   }
@@ -237,7 +229,6 @@ class CaseDetailOverviewScreen extends StatelessWidget {
     );
   }
 
-  // Custom styling for the Incident Details
   Widget _buildIncidentDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

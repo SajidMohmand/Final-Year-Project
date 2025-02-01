@@ -15,16 +15,15 @@ class RequestProvider with ChangeNotifier {
 
   List<Request> get requests => [..._requests];
 
-  // Add a new request
   void addRequest(String name, String phone, String issue, String details, Lawyer lawyer) {
     var uuid = Uuid();
 
 
     _requests.add(
       Request(
-        id: uuid.v4(), // Generate unique ID
-        status: RequestStatus.Awaiting, // Default status
-        lawyer: lawyer, // Pass Lawyer object here
+        id: uuid.v4(),
+        status: RequestStatus.Awaiting,
+        lawyer: lawyer,
         formDetails: {
           'name': name,
           'phone': phone,
@@ -36,27 +35,24 @@ class RequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Update the status of a request
   void updateRequestStatus(String requestId, RequestStatus newStatus) {
     final index = _requests.indexWhere((request) => request.id == requestId);
     if (index != -1) {
       _requests[index] = Request(
         id: _requests[index].id,
         status: newStatus,
-        lawyer: _requests[index].lawyer, // Keep the existing Lawyer object
+        lawyer: _requests[index].lawyer,
         formDetails: _requests[index].formDetails,
       );
       notifyListeners();
     }
   }
 
-  // Remove a request
   void removeRequest(String requestId) {
     _requests.removeWhere((request) => request.id == requestId);
     notifyListeners();
   }
 
-  // Clear all requests
   void clearRequests() {
     _requests.clear();
     notifyListeners();

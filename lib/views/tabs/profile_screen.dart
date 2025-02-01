@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fyp2/views/tabs/request_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,11 +11,11 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(154), // Set AppBar height
+        preferredSize: Size.fromHeight(154),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Stack(
-              clipBehavior: Clip.none, // Ensures the image is not clipped
+              clipBehavior: Clip.none,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.only(
@@ -32,7 +31,6 @@ class ProfileScreen extends StatelessWidget {
                         icon:
                             Icon(Icons.settings, size: 24, color: Colors.white),
                         onPressed: () {
-                          // Handle settings action
                         },
                       ),
                     ],
@@ -40,10 +38,9 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Profile Image Positioned in the AppBar
                 Positioned(
-                  bottom: -60, // Slightly overlaps the body
-                  left: constraints.maxWidth / 2 - 60, // Centers image
+                  bottom: -60,
+                  left: constraints.maxWidth / 2 - 60,
                   child: Container(
                     width: 120,
                     height: 120,
@@ -54,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 60,
                       backgroundImage: AssetImage(
-                          'assets/images/profile.png'), // Change to your image asset
+                          'assets/images/profile.png'),
                     ),
                   ),
                 ),
@@ -65,11 +62,10 @@ class ProfileScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.only(
-            top: 65.0), // Adjusted for profile image overlap
+            top: 65.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // User Name with Edit Icon
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -94,13 +90,11 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
 
-            // Horizontal Divider
             Divider(thickness: 2),
 
             SizedBox(
               height: 20,
             ),
-            // Clickable Resolved Cases
             ListTile(
               leading: Container(
                 height: 42,
@@ -133,7 +127,6 @@ class ProfileScreen extends StatelessWidget {
               thickness: 1,
             ),
             SizedBox(height: 5),
-            // Clickable Lawyer List
             ListTile(
               leading: Container(
                 height: 42,
@@ -173,7 +166,6 @@ class ProfileScreen extends StatelessWidget {
 class LawyerSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Get the list of filtered lawyers from the provider
     final lawyerProvider = Provider.of<LawyerProvider>(context);
     final lawyers = lawyerProvider.filteredLawyers;
 
@@ -233,7 +225,6 @@ class LawyerSelectionScreen extends StatelessWidget {
                             icon: Icon(Icons.message,
                                 color: Colors.brown, size: 24),
                             onPressed: () {
-                              // Handle message action
                             },
                           ),
                         ),
@@ -282,7 +273,6 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
     ),
   ];
 
-  // Track expanded review sections
   Map<String, bool> expandedReviews = {};
 
   @override
@@ -310,28 +300,28 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                     padding: EdgeInsets.only(
                         left: 20,
                         top: 5,
-                        bottom: 5), // Adjusted padding for consistency
+                        bottom: 5),
                     decoration: BoxDecoration(
                       border: Border(
                         left: BorderSide(
                           color:
-                              Colors.brown, // Set the color of the left border
-                          width: 2.0, // Set the width of the left border
+                              Colors.brown,
+                          width: 2.0,
                         ),
                       ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment
-                          .start, // Ensures the text is aligned to the left
+                          .start,
                       children: [
                         Text(
                           'Domain: ${request.lawyer.domain}',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            fontSize: 16, // Same font size for consistency
+                            fontSize: 16,
                           ),
                         ),
-                        SizedBox(height: 5), // Adds spacing between texts
+                        SizedBox(height: 5),
                         Text(
                           'Lawyer: ${request.lawyer.name}',
                           style: TextStyle(
@@ -342,7 +332,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10), // Adjust spacing between sections
+                  SizedBox(height: 10),
                   Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Text('Issue: ${request.formDetails['issue']}'),
@@ -354,7 +344,6 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                         thickness: 1,
                       )),
                   SizedBox(height: 5),
-                  // Row with Review Text & Icon
                   Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Row(
@@ -380,7 +369,6 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                     ),
                   ),
 
-                  // Expandable Review Section
                   if (expandedReviews[request.id] == true) ...[
                     Padding(
                         padding: EdgeInsets.only(left: 20),
@@ -399,7 +387,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                                   index < double.parse(request.lawyer.rating)
                                       ? Icons.star
                                       : Icons
-                                          .star_border, // Filled star if index < rating, else empty star
+                                          .star_border,
                                   color: Colors.yellow.shade700, size: 12,
                                 );
                               }),
@@ -436,10 +424,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String location = 'New York, USA';
   String address = '1234 Elm Street, NY';
 
-  // Default profile image
   String profileImagePath = 'assets/images/profile.png';
 
-  // Function to pick an image from the gallery
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -461,12 +447,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Circular avatar with change image button
               Center(
                 child: CircleAvatar(
                   radius: 50,
                   backgroundImage:
-                      AssetImage(profileImagePath), // Use picked image
+                      AssetImage(profileImagePath),
                 ),
               ),
               SizedBox(
@@ -474,20 +459,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               Center(
                 child: TextButton(
-                  onPressed: _pickImage, // Handle image change action
+                  onPressed: _pickImage,
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: Colors.brown, // Set the background color
+                    backgroundColor: Colors.brown,
                     padding: EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20), // Padding for the button
+                        vertical: 10, horizontal: 20),
                     shape: RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(7), // Round the corners
-                    ), // Text color
+                          BorderRadius.circular(7),
+                    ),
                   ),
                   child: Text(
                     "Change Image",
-                    style: TextStyle(fontSize: 16), // Text size
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
               ),
@@ -510,7 +495,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   IconButton(
                     icon: Icon(Icons.edit,
                         color: Color(
-                            0xff6F7977)), // Edit icon for Personal Information
+                            0xff6F7977)),
                     onPressed: () {
                       print("Edit Personal Information");
                     },
@@ -519,36 +504,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
 
               SizedBox(height: 10),
-              // First Name
               _buildInfoRow('First Name', firstName),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              // Last Name
               _buildInfoRow('Last Name', lastName),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              // Phone Number
               _buildInfoRow('Phone Number', phoneNumber),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              // Email
               _buildInfoRow('Email', email),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
-              // Location
               _buildInfoRow('Location', location),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              // Address
               _buildInfoRow('Address', address),
               Divider(thickness: 1,),
               SizedBox(height: 7),
@@ -560,7 +539,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  // Helper method to build a row with information
   Widget _buildInfoRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

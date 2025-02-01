@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../register/register_screen.dart';
-import '../verification_screen.dart'; // Import your verification screen
-import './login_screen.dart'; // Import your registration screen
+import '../verification_screen.dart';
+import './login_screen.dart';
 
 class LoginFormScreen extends StatefulWidget {
   final String role;
@@ -16,7 +16,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   String _mobileNumber = '';
   bool _isButtonEnabled = false;
 
-  // Update mobile number and enable/disable the button based on its validity
   void _updateMobileNumber(String number) {
     setState(() {
       _mobileNumber = number;
@@ -25,7 +24,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   }
 
   bool _isValidPhoneNumber(String phoneNumber) {
-    // Check if the phone number is valid (starts with '03' and has 11 digits)
     return phoneNumber.length == 11 && phoneNumber.startsWith('03') && RegExp(r'^[0-9]+$').hasMatch(phoneNumber);
   }
 
@@ -57,7 +55,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
             ),
             SizedBox(height: 20),
 
-            // **Mobile Number Input**
             TextField(
               onChanged: _updateMobileNumber,
               keyboardType: TextInputType.phone,
@@ -69,7 +66,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
 
             Spacer(),
 
-            // **Continue Button (Enabled only for 11-digit number)**
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -82,7 +78,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     ),
                   );
                 }
-                    : null, // Disabled if not 11 digits
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
                   _isButtonEnabled ? Colors.brown : Colors.grey,
@@ -107,7 +103,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                 )),
             SizedBox(height: 20),
 
-            // **Social Login Buttons**
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -119,7 +114,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
 
             SizedBox(height: 40),
 
-            // **Register Link**
             Center(
               child: GestureDetector(
                 onTap: () {
@@ -146,7 +140,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     );
   }
 
-  // **Social Button Widget**
   Widget _buildSocialButton(String text, String assetPath) {
     return Expanded(
       child: ElevatedButton.icon(
@@ -157,10 +150,10 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
           padding: EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
-            side: BorderSide(color: Colors.brown, width: 2), // Added border
+            side: BorderSide(color: Colors.brown, width: 2),
           ),
-          backgroundColor: Colors.white, // Optional: Set background color
-          foregroundColor: Colors.brown, // Text and icon color
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.brown,
         ),
       ),
     );

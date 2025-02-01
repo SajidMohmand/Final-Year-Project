@@ -79,8 +79,8 @@ class _FindLawyerScreenState extends State<FindLawyerScreen> {
         automaticallyImplyLeading: false,
         title: Image(
           image: AssetImage("assets/images/splash.png"),
-          width: 100, // Adjust the width as needed
-          height: 50, // Adjust the height as needed
+          width: 100,
+          height: 50,
         ),
         centerTitle: true,
       ),
@@ -89,7 +89,6 @@ class _FindLawyerScreenState extends State<FindLawyerScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search Bar
             GestureDetector(
               onTap: _navigateToSearchScreen,
               child: Container(
@@ -109,7 +108,6 @@ class _FindLawyerScreenState extends State<FindLawyerScreen> {
             ),
             SizedBox(height: 50),
 
-            // Browse by Domain (Two per row)
             Text("Browse by Domain:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
             GridView.builder(
@@ -117,21 +115,21 @@ class _FindLawyerScreenState extends State<FindLawyerScreen> {
               physics: NeverScrollableScrollPhysics(),
               itemCount: domains.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Two buttons per row
+                crossAxisCount: 2,
                 crossAxisSpacing: 25,
                 mainAxisSpacing: 20,
-                childAspectRatio: 3.5, // Slightly smaller aspect ratio
+                childAspectRatio: 3.5,
               ),
               itemBuilder: (context, index) {
                 return ElevatedButton(
                   onPressed: () => _navigateToLawyerList(domains[index]),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.brown.shade500, // Stylish button color
-                    foregroundColor: Colors.white, // Text color
+                    backgroundColor: Colors.brown.shade500,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6), // Slightly rounded corners
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 10), // Adjusted button padding
+                    padding: EdgeInsets.symmetric(vertical: 10),
                   ),
                   child: Text(
                     domains[index],
@@ -149,7 +147,6 @@ class _FindLawyerScreenState extends State<FindLawyerScreen> {
   }
 }
 
-// Lawyer List Screen
 class LawyerListScreen extends StatelessWidget {
   final String domain;
   final List<Map<String, String>> lawyers;
@@ -204,7 +201,6 @@ class LawyerListScreen extends StatelessWidget {
   }
 }
 
-// Search Lawyer Screen
 class SearchLawyerScreen extends StatefulWidget {
   final List<Map<String, String>> lawyers;
 

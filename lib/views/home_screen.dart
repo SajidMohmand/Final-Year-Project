@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import './tabs/chatbot_screen.dart';  // Chatbot screen
-import './tabs/find_lawyer_screen.dart'; // Find Lawyer screen
-import './tabs/request_screen.dart'; // Request screen
-import './tabs/chat_screen.dart'; // Chat screen
-import './tabs/profile_screen.dart'; // Profile screen
+import './tabs/chatbot_screen.dart';
+import './tabs/find_lawyer_screen.dart';
+import './tabs/request_screen.dart';
+import './tabs/chat_screen.dart';
+import './tabs/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -16,11 +16,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    ChatbotScreen(),    // Chatbot tab
-    FindLawyerScreen(), // Find Lawyer tab
-    RequestScreen(),    // Request tab
-    ChatScreen(),       // Chat tab
-    ProfileScreen(),    // Profile tab
+    ChatbotScreen(),
+    FindLawyerScreen(),
+    RequestScreen(),
+    ChatScreen(),
+    ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -35,16 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex], // Display selected screen
+      body: _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.brown.shade50, // Light brown background
+          backgroundColor: Colors.brown.shade50,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          selectedItemColor: Colors.amber.shade700, // Gold-ish color for selected tab
-          unselectedItemColor: Colors.brown.shade400, // Dark brown for unselected tabs
+          selectedItemColor: Colors.amber.shade700,
+          unselectedItemColor: Colors.brown.shade400,
           selectedFontSize: 14,
-          elevation: 8, // Add shadow to lift the bar
-          type: BottomNavigationBarType.fixed, // Allow more than 3 items
+          elevation: 8,
+          type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.chat),
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             BottomNavigationBarItem(
               icon: Transform.rotate(
-                angle: -pi / 4, // Rotates the icon 45 degrees upward
+                angle: -pi / 4,
                 child: Icon(Icons.send),
               ),
               label: 'Request',

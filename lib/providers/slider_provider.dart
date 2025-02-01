@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SliderProvider with ChangeNotifier {
-  int _currentPage = 0; // Renamed _currentIndex to _currentPage for consistency
+  int _currentPage = 0;
 
-  int get currentPage => _currentPage; // Updated getter name
+  int get currentPage => _currentPage;
 
   void setPage(int index) {
     _currentPage = index;

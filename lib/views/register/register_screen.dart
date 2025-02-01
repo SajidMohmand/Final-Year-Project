@@ -25,7 +25,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             SizedBox(height: 40),
 
-            // **Centered Image**
             Center(
               child: Image.asset(
                 "assets/images/splash.png",
@@ -36,7 +35,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             SizedBox(height: 30),
 
-            // **Title and Subtitle**
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -54,7 +52,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             SizedBox(height: 20),
 
-            // **Role Selection (Client / Lawyer)**
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -80,7 +77,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             Spacer(),
 
-            // **Next Button**
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -135,7 +131,7 @@ class RoleBox extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 160, // Increased Height
+        height: 160,
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: isSelected ? Colors.brown.shade400 : Colors.white,
@@ -153,7 +149,6 @@ class RoleBox extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // **Image**
             Image.asset(
               imagePath,
               width: 50,
@@ -161,7 +156,6 @@ class RoleBox extends StatelessWidget {
             ),
             SizedBox(height: 10),
 
-            // **Text**
             Text(
               title,
               style: TextStyle(

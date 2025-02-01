@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../login/login_screen.dart';
-import './register_screen.dart';
 import '../verification_screen.dart';
 
 class RegisterFormScreen extends StatefulWidget {
@@ -33,7 +32,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Dynamic Title (Hi, Lawyer / Hi, Client)
 
             SizedBox(height: 20),
 
@@ -50,7 +48,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   _buildTextField("Mobile Number *", mobileController, TextInputType.phone),
                   SizedBox(height: 20),
 
-                  // Continue Button (Full Width)
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -78,7 +75,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   Text("Or",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w100),),
                   SizedBox(height: 20),
 
-                  // Social Media Login (Google & Facebook)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -93,7 +89,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
             Spacer(),
 
-            // Already have an account? Login
             Center(
               child: GestureDetector(
                 onTap: () {
@@ -119,7 +114,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     );
   }
 
-  // Function to Build TextFields
   Widget _buildTextField(String label, TextEditingController controller, [TextInputType inputType = TextInputType.text, bool isRequired = false]) {
     return TextFormField(
       controller: controller,
@@ -132,7 +126,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     );
   }
 
-  // Function to Build Social Buttons
   Widget _buildSocialButton(String text, String assetPath) {
     return Expanded(
       child: ElevatedButton.icon(
@@ -143,10 +136,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
           padding: EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
-            side: BorderSide(color: Colors.brown, width: 2), // Added border
+            side: BorderSide(color: Colors.brown, width: 2),
           ),
-          backgroundColor: Colors.white, // Optional: Set background color
-          foregroundColor: Colors.brown, // Text and icon color
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.brown,
         ),
       ),
     );

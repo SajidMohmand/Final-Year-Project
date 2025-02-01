@@ -9,13 +9,12 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20), // Added horizontal padding
+        padding: EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 40),
 
-            // **Centered Image**
             Center(
               child: Image.asset(
                 "assets/images/splash.png",
@@ -26,7 +25,6 @@ class LoginScreen extends StatelessWidget {
 
             SizedBox(height: 30),
 
-            // **Title and Subtitle with Proper Padding**
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -44,7 +42,6 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
 
-            // **Role Selection (Client / Lawyer)**
             Consumer<RegisterProvider>(
               builder: (context, provider, child) {
                 return Row(
@@ -74,7 +71,6 @@ class LoginScreen extends StatelessWidget {
 
             Spacer(),
 
-            // **Full-Width Next Button**
             Consumer<RegisterProvider>(
               builder: (context, provider, child) {
                 return SizedBox(
@@ -132,7 +128,7 @@ class RoleBox extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 160, // Increased Height
+        height: 160,
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: isSelected ? Colors.brown.shade400 : Colors.white,
@@ -158,7 +154,6 @@ class RoleBox extends StatelessWidget {
             ),
             SizedBox(height: 10),
 
-            // **Text**
             Text(
               title,
               style: TextStyle(

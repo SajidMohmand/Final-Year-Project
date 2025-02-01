@@ -41,17 +41,14 @@ class SliderScreen extends StatelessWidget {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // **Top Image**
                         Image.asset(slides[index]["topImage"]!, width: 150, height: 80, fit: BoxFit.contain),
 
                         SizedBox(height: 20),
 
-                        // **Main Image**
                         Image.asset(slides[index]["image"]!, width: 400, height: 200),
 
                         SizedBox(height: 20),
 
-                        // **Title**
                         Text(
                           slides[index]["title"]!,
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -59,7 +56,6 @@ class SliderScreen extends StatelessWidget {
 
                         SizedBox(height: 10),
 
-                        // **Description**
                         Text(
                           slides[index]["desc"]!,
                           textAlign: TextAlign.center,
@@ -67,7 +63,6 @@ class SliderScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 20),
 
-                        // **Page Indicator (3 Dots)**
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
@@ -89,9 +84,8 @@ class SliderScreen extends StatelessWidget {
                 ),
               ),
 
-              // **Adjust the spacing to move the "Get Started" button slightly above the bottom**
               Padding(
-                padding: EdgeInsets.only(left: 10, right: 10, bottom: 40), // Added bottom padding
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 40),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

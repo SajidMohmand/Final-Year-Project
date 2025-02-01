@@ -55,7 +55,6 @@ class RequestScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // First Line: Request ID & Status
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -103,7 +102,6 @@ class RequestScreen extends StatelessWidget {
                             Text("Issue: ${request.formDetails['issue']}"),
                             SizedBox(height: 12),
 
-                            // Buttons for Accepted Requests (Now properly wrapped)
                             if (request.status == RequestStatus.Accepted) ...[
                               Divider(
                                 thickness: 0.5,
@@ -128,7 +126,7 @@ class RequestScreen extends StatelessWidget {
                                       );
                                     },
                                     style: TextButton.styleFrom(
-                                      foregroundColor: Colors.brown, // Text color brown
+                                      foregroundColor: Colors.brown,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(6.0),
                                       ),
@@ -140,10 +138,9 @@ class RequestScreen extends StatelessWidget {
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
-                                      // Chat functionality placeholder
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.brown, // Brown background color
+                                      backgroundColor: Colors.brown,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(7.0),
                                       ),
@@ -173,7 +170,7 @@ class RequestScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Transform.rotate(
-                        angle: -pi / 4, // Rotates the icon 45 degrees upward
+                        angle: -pi / 4,
                         child: Icon(Icons.send,
                             size: 100, color: Color(0xFFDAE5E2)),
                       ),
@@ -193,7 +190,6 @@ class RequestScreen extends StatelessWidget {
                       SizedBox(height: 30),
                       ElevatedButton(
                         onPressed: () {
-                          // Navigate to the new page when the button is pressed
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -206,21 +202,21 @@ class RequestScreen extends StatelessWidget {
                           padding: EdgeInsets.symmetric(
                               horizontal: 20, vertical: 12),
                           textStyle: TextStyle(fontSize: 16),
-                          backgroundColor: Color(0xFF6D4905), // Brown color
-                          foregroundColor: Colors.white, // White text color
+                          backgroundColor: Color(0xFF6D4905),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                                5), // Less rounded corners
+                                5),
                           ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize
-                              .min, // This will ensure the button size fits the content
+                              .min,
                           children: [
                             Icon(Icons.add, color: Colors.white),
                             SizedBox(
                                 width:
-                                    8), // Add some space between the icon and the text
+                                    8),
                             Text("Add New Request"),
                           ],
                         ),
@@ -252,7 +248,6 @@ class RequestScreen extends StatelessWidget {
 class LawyerListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Get the list of filtered lawyers from the provider
     final lawyerProvider = Provider.of<LawyerProvider>(context);
     final lawyers = lawyerProvider.filteredLawyers;
 
@@ -266,7 +261,6 @@ class LawyerListScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               onChanged: (query) {
-                // Call the filterLawyers method when the search text changes
                 lawyerProvider.filterLawyers(query);
               },
               decoration: InputDecoration(
@@ -326,7 +320,6 @@ class LawyerListScreen extends StatelessWidget {
                             ],
                           ),
                           onTap: () {
-                            // Show the profile details dialog
                             showProfileDetail(context, lawyer);
                           },
                         ),
@@ -348,7 +341,6 @@ class LawyerListScreen extends StatelessWidget {
     );
   }
 
-  // Show the profile detail dialog
   void showProfileDetail(BuildContext context, Lawyer lawyer) {
     showDialog(
       context: context,

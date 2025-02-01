@@ -58,17 +58,14 @@ class _ApplyForRequestScreenState extends State<ApplyForRequestScreen> {
                 Divider(thickness: 1, color: Colors.grey),
                 SizedBox(height: 20),
 
-                // Name field (optional, no validation)
                 _buildTextField(_nameController, "Full Name", "Enter your name"),
                 SizedBox(height: 20),
 
-                // Phone field (optional, no validation)
                 _buildTextField(_phoneController, "Phone Number",
                     "Enter a valid phone number",
                     keyboardType: TextInputType.phone),
                 SizedBox(height: 20),
 
-                // Dropdown for Cyber Issue (optional, no validation)
                 DropdownButtonFormField<String>(
                   value: _selectedIssue,
                   decoration: InputDecoration(
@@ -87,7 +84,6 @@ class _ApplyForRequestScreenState extends State<ApplyForRequestScreen> {
                 ),
                 SizedBox(height: 20),
 
-                // Details field (optional, no validation)
                 TextFormField(
                   controller: _detailsController,
                   decoration: InputDecoration(
@@ -101,7 +97,6 @@ class _ApplyForRequestScreenState extends State<ApplyForRequestScreen> {
                 ),
                 SizedBox(height: 20),
 
-                // File attachment (optional)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -156,7 +151,6 @@ class _ApplyForRequestScreenState extends State<ApplyForRequestScreen> {
                   ],
                 ),
 
-                // Navigation Buttons (Back and Next)
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -12,38 +12,38 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Removes the back button
-        centerTitle: true, // Centers the image
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Padding(
-          padding: const EdgeInsets.only(top: 10.0), // Adjust the value as needed
+          padding: const EdgeInsets.only(top: 10.0),
           child: Image.asset(
             'assets/images/splash.png',
-            height: 50, // Adjust size as needed
+            height: 50,
           ),
         ),
       ),
-      body: Center( // Centers all the content within the screen
+      body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Centers the rest of the content
-            crossAxisAlignment: CrossAxisAlignment.center, // Centers horizontally
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 "How Can I Help You?",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 20), // Space between title and input field
+              SizedBox(height: 20),
               TextField(
                 controller: _queryController,
                 decoration: InputDecoration(
                   hintText: "Enter your query...",
                   hintStyle: TextStyle(color: Colors.brown,fontSize: 18),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15), // Rounded corners
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   filled: true,
-                  fillColor: Colors.white, // Background color
+                  fillColor: Colors.white,
                   contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Padding inside
                   suffixIcon: IconButton(
                     icon: Icon(Icons.send_rounded, color: Colors.brown),

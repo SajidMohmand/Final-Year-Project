@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Color(0xFF6D4905),
-        fontFamily: 'OpenSans', // Use the added font family
+        fontFamily: 'OpenSans',
       ),
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),

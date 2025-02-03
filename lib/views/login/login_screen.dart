@@ -8,6 +8,32 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end, // Aligns button to the right
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        LoginFormScreen(role: "Admin",),
+                  ),
+                );
+              },
+              child: Text(
+                "Are You Admin?",
+                style: TextStyle(
+                  color: Colors.brown, // Makes text white for better visibility
+                  fontWeight: FontWeight.bold, // Bold text
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Column(

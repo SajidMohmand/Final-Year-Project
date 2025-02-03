@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import '../widgets/app_drawer.dart';
 import './tabs/chatbot_screen.dart';
 import './tabs/find_lawyer_screen.dart';
 import './tabs/request_screen.dart';

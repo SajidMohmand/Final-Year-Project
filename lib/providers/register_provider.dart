@@ -9,4 +9,8 @@ class RegisterProvider with ChangeNotifier {
     _selectedRole = role;
     notifyListeners();
   }
+  void clearRole() {
+    _selectedRole = '';
+    notifyListeners();
+  }
 }

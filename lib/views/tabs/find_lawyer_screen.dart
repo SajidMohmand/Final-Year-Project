@@ -84,6 +84,7 @@ class _FindLawyerScreenState extends State<FindLawyerScreen> {
         ),
         centerTitle: true,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

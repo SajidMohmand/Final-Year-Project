@@ -60,6 +60,7 @@ class ProfileScreen extends StatelessWidget {
           },
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.only(
             top: 65.0),

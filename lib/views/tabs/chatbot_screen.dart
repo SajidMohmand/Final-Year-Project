@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/app_drawer.dart';
+
 class ChatbotScreen extends StatefulWidget {
   @override
   _ChatbotScreenState createState() => _ChatbotScreenState();
@@ -12,7 +14,6 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(top: 10.0),
@@ -22,6 +23,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           ),
         ),
       ),
+      drawer: AppDrawer(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

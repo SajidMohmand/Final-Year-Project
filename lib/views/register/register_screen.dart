@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fyp2/views/login/login_form_screen.dart';
+import 'package:fyp2/views/login/login_screen.dart';
 import 'register_form_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -18,6 +20,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end, // Aligns button to the right
+          children: [
+            TextButton(
+              onPressed: () {
+                _selectRole("Admin");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        LoginFormScreen(role: _selectedRole),
+                  ),
+                );
+              },
+              child: Text(
+                "Are You Admin?",
+                style: TextStyle(
+                  color: Colors.brown, // Makes text white for better visibility
+                  fontWeight: FontWeight.bold, // Bold text
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Column(

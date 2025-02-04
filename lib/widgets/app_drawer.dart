@@ -4,6 +4,7 @@ import 'package:fyp2/views/login/login_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/register_provider.dart';
+import '../views/drawer/complaint_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -71,12 +72,18 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.report),
             title: Text("Complaint"),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder:(context)=> ComplaintScreen()));
+
+
+            },
           ),
           ListTile(
             leading: Icon(Icons.settings),
             title: Text("Settings"),
-            onTap: () {},
+            onTap: () {
+
+            },
           ),
           ListTile(
             leading: Icon(Icons.logout),

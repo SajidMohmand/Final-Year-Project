@@ -555,7 +555,7 @@ class DashboardScreen extends StatelessWidget {
           width: 16, // Width of the color box
           height: 16, // Height of the color box
           decoration: BoxDecoration(
-              color: color, borderRadius: BorderRadius.circular(16)),
+              color: color, borderRadius: BorderRadius.circular(16),),
         ),
         SizedBox(width: 8), // Space between color box and name
         Text(

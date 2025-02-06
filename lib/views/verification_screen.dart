@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'home_screen.dart';
 
 class VerificationScreen extends StatefulWidget {
+  final String verificationId;
+
+  VerificationScreen({required this.verificationId});
+
   @override
   _VerificationScreenState createState() => _VerificationScreenState();
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
-  List<TextEditingController> controllers =
-  List.generate(4, (index) => TextEditingController());
-  List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
+  List<TextEditingController> controllers = List.generate(6, (index) => TextEditingController());
+  List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
   int currentIndex = 0;
   bool _agreedToTerms = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isResending = false;
 
   @override
   void dispose() {
@@ -33,10 +39,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
           FocusScope.of(context).requestFocus(focusNodes[currentIndex]);
         });
       }
-    } else if (currentIndex < 4) {
+    } else if (currentIndex < 6) {
       setState(() {
         controllers[currentIndex].text = value;
-        if (currentIndex < 3) {
+        if (currentIndex < 5) {
           currentIndex++;
           FocusScope.of(context).requestFocus(focusNodes[currentIndex]);
         }
@@ -48,10 +54,24 @@ class _VerificationScreenState extends State<VerificationScreen> {
     }
   }
 
-  void _verifyCode() {
+  void _verifyCode() async {
     String otpCode = controllers.map((controller) => controller.text).join();
     print("Entered OTP: $otpCode");
-    _showTermsDialog();
+
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: widget.verificationId,
+        smsCode: otpCode,
+      );
+
+      await _auth.signInWithCredential(credential);
+      _showTermsDialog();
+    } catch (e) {
+      print("Verification failed: $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Verification failed! Please try again."),
+      ));
+    }
   }
 
   void _showTermsDialog() {
@@ -138,6 +158,50 @@ class _VerificationScreenState extends State<VerificationScreen> {
     );
   }
 
+  Future<void> _resendOTP() async {
+    setState(() {
+      _isResending = true;
+    });
+
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: '+1234567890', // Add the phone number you're verifying
+        timeout: Duration(seconds: 60),
+        verificationCompleted: (PhoneAuthCredential credential) {
+          _auth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          setState(() {
+            _isResending = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Failed to resend OTP! Please try again."),
+          ));
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          setState(() {
+            _isResending = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("OTP resent successfully."),
+          ));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          setState(() {
+            _isResending = false;
+          });
+        },
+      );
+    } catch (e) {
+      setState(() {
+        _isResending = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Error resending OTP: $e"),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,18 +214,17 @@ class _VerificationScreenState extends State<VerificationScreen> {
             Text("Enter Verification Code",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
-            Text("Enter the four-digit code you received by SMS",
+            Text("Enter the six-digit code you received by SMS",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.grey)),
             SizedBox(height: 10),
             Row(
               children: [
-                Text("Didn’t receive the code?",
+                Text("Didn’t receive the code? ",
                     style: TextStyle(fontSize: 16, color: Colors.grey)),
                 SizedBox(width: 10),
                 GestureDetector(
-                  onTap: () {
-                  },
+                  onTap: _isResending ? null : _resendOTP,
                   child: Text("Resend",
                       style: TextStyle(
                           fontSize: 16,
@@ -171,14 +234,11 @@ class _VerificationScreenState extends State<VerificationScreen> {
               ],
             ),
             SizedBox(height: 20),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: List.generate(4, (index) => _buildCodeField(index)),
+              children: List.generate(6, (index) => _buildCodeField(index)),
             ),
-
             SizedBox(height: 30),
-
             _buildNumberPad(),
           ],
         ),
@@ -188,7 +248,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   Widget _buildCodeField(int index) {
     return Container(
-      width: 60,
+      width: 50,
       height: 70,
       margin: EdgeInsets.symmetric(horizontal: 5),
       child: TextField(
@@ -203,7 +263,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
           border: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.brown.shade700, width: 2),
           ),
-
         ),
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
@@ -236,7 +295,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
         width: 70,
         height: 70,
         margin: EdgeInsets.all(10),
-
         child: Center(
           child: value == "delete"
               ? Icon(Icons.backspace, size: 30)

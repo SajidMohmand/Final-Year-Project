@@ -7,7 +7,13 @@ import 'views/splash_screen.dart';
 import 'providers/slider_provider.dart';
 import 'providers/register_provider.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async{
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(
     MultiProvider(
       providers: [

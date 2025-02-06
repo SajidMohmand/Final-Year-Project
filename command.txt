@@ -1,0 +1,7 @@
+plant uml
+larawel 
+djangu
+
+
+add fingerprint in firebase
+keytool -list -v -keystore "C:\Users\HS TRADER\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android

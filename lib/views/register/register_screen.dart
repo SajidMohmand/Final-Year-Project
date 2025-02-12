@@ -89,8 +89,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: RoleBox(
                     title: "Client",
                     imagePath: "assets/images/client.png",
-                    isSelected: _selectedRole == "Client",
-                    onTap: () => _selectRole("Client"),
+                    isSelected: _selectedRole == "rClient",
+                    onTap: () => _selectRole("rClient"),
                   ),
                 ),
                 SizedBox(width: 20),
@@ -98,8 +98,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: RoleBox(
                     title: "Lawyer",
                     imagePath: "assets/images/lawyer.png",
-                    isSelected: _selectedRole == "Lawyer",
-                    onTap: () => _selectRole("Lawyer"),
+                    isSelected: _selectedRole == "rLawyer",
+                    onTap: () => _selectRole("rLawyer"),
                   ),
                 ),
               ],

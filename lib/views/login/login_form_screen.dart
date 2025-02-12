@@ -45,7 +45,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
           await _auth.signInWithCredential(credential);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => VerificationScreen(verificationId: 'null',)),
+            MaterialPageRoute(builder: (context) => VerificationScreen(verificationId: 'null',role: widget.role)),
           );
         },
         verificationFailed: (FirebaseAuthException e) {
@@ -58,7 +58,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VerificationScreen(verificationId: verificationId),
+              builder: (context) => VerificationScreen(verificationId: verificationId,role: widget.role,),
             ),
           );
         },
@@ -121,6 +121,22 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
               ),
             ),
             Spacer(),
+
+            SizedBox(height: 20),
+            Center(child: Text("Or",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w100))),
+            SizedBox(height: 20),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildSocialButton("Google", "assets/images/google.png"),
+                SizedBox(width: 20),
+                _buildSocialButton("Facebook", "assets/images/facebook.png"),
+              ],
+            ),
+
+            SizedBox(height: 40),
+
             Center(
               child: GestureDetector(
                 onTap: () {
@@ -162,3 +178,23 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     );
   }
 }
+
+Widget _buildSocialButton(String text, String assetPath) {
+  return Expanded(
+    child: ElevatedButton.icon(
+      onPressed: () {},
+      icon: Image.asset(assetPath, width: 24, height: 24),
+      label: Text(text, style: TextStyle(fontSize: 16, color: Colors.brown)),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: Colors.brown, width: 2),
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.brown,
+      ),
+    ),
+  );
+}
+

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import './lawyer screens/profileSetup/setup_profile_screen.dart';
 import 'home_screen.dart';
 
 class VerificationScreen extends StatefulWidget {
   final String verificationId;
+  final String role;
 
-  VerificationScreen({required this.verificationId});
+  VerificationScreen({required this.verificationId,required this.role});
 
   @override
   _VerificationScreenState createState() => _VerificationScreenState();
@@ -131,10 +133,19 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       _agreedToTerms = agreedToTerms;
                     });
                     Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
+
+                    if(widget.role.substring(0,2) == 'rL'){
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfileSetupScreen()),
+                      );
+                    }else{
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    }
+
                   }
                       : null,
                   style: ButtonStyle(

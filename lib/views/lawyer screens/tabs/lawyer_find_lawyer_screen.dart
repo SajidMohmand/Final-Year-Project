@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(home: FindLawyerScreen()));
+  runApp(MaterialApp(home: LawyerFindLawyerScreen()));
 }
 
-class FindLawyerScreen extends StatefulWidget {
+class LawyerFindLawyerScreen extends StatefulWidget {
   @override
-  _FindLawyerScreenState createState() => _FindLawyerScreenState();
+  _LawyerFindLawyerScreenState createState() => _LawyerFindLawyerScreenState();
 }
 
-class _FindLawyerScreenState extends State<FindLawyerScreen> {
+class _LawyerFindLawyerScreenState extends State<LawyerFindLawyerScreen> {
   final List<String> domains = [
     "Cyber Harassment",
     "Family Law",

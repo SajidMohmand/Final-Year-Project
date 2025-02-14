@@ -72,7 +72,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Login as ${widget.role}",
+          "Login as ${widget.role.substring(1)}",
           style: TextStyle(fontSize: 22),
         ),
       ),

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../models/lawyer.dart';
-import '../../models/request.dart';
-import '../../providers/lawyer_provider.dart';
+import '../../../models/lawyer.dart';
+import '../../../models/request.dart';
+import '../../../providers/lawyer_provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class LawyerProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditProfileScreen(),
+                        builder: (context) => EditLawyerProfileScreen(),
                       ),
                     );
                   },
@@ -412,12 +412,12 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
   }
 }
 
-class EditProfileScreen extends StatefulWidget {
+class EditLawyerProfileScreen extends StatefulWidget {
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  _EditLawyerProfileScreenState createState() => _EditLawyerProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditLawyerProfileScreenState extends State<EditLawyerProfileScreen> {
   String firstName = 'John';
   String lastName = 'Doe';
   String phoneNumber = '1234567890';

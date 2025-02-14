@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 
-class ChatScreen extends StatelessWidget {
+class LawyerChatScreen extends StatelessWidget {
   final List<Map<String, String>> chatData = [
     {
       'imagePath': 'assets/images/lawyer1.png',

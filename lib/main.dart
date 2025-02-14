@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fyp2/providers/form_provider.dart';
 import 'package:fyp2/providers/lawyer_provider.dart';
+import 'package:fyp2/providers/profile_provider.dart';
 import 'package:fyp2/providers/request_provider.dart';
 import 'package:provider/provider.dart';
 import 'views/splash_screen.dart';
@@ -22,6 +23,7 @@ void main() async{
         ChangeNotifierProvider(create: (_) => LawyerProvider()),
         ChangeNotifierProvider(create: (context) => FormProvider()),
         ChangeNotifierProvider(create: (context) => RequestProvider()),
+        ChangeNotifierProvider(create: (context) => ProfileProvider()),
       ],
       child: MyApp(),
     ),

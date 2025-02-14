@@ -1,14 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:fyp2/views/tabs/request/case_detail_overview_screen.dart';
+import './request/lawyer_case_detail_overview_screen.dart';
 import 'package:provider/provider.dart';
-import '../../models/lawyer.dart';
-import '../../models/request.dart';
-import '../../providers/lawyer_provider.dart';
-import '../../providers/request_provider.dart';
-import './request/apply_for_request_screen.dart';
+import '../../../models/lawyer.dart';
+import '../../../models/request.dart';
+import '../../../providers/lawyer_provider.dart';
+import '../../../providers/request_provider.dart';
+import './request/lawyer_apply_for_request_screen.dart';
 
-class RequestScreen extends StatelessWidget {
+class LawyerRequestScreen extends StatelessWidget {
   Color _getStatusColor(RequestStatus status) {
     switch (status) {
       case RequestStatus.Accepted:
@@ -116,7 +116,7 @@ class RequestScreen extends StatelessWidget {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => CaseDetailOverviewScreen(
+                                          builder: (context) => LawyerCaseDetailOverviewScreen(
                                             request.lawyer.id,
                                             request.formDetails['name'].toString(),
                                             request.formDetails['phone'].toString(),
@@ -403,7 +403,7 @@ class LawyerListScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ApplyForRequestScreen(lawyer.id),
+                        builder: (context) => LawyerApplyForRequestScreen(lawyer.id),
                       ),
                     );
                   },

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fyp2/providers/profile_provider.dart';
+import 'package:provider/provider.dart';
 import 'add_experience_screen.dart';
 
 class BioSetupScreen extends StatefulWidget {
@@ -16,6 +18,12 @@ class _BioSetupScreenState extends State<BioSetupScreen> {
   String? selectedBachelorUniversity;
   String? selectedBachelorYear;
 
+  void addValues(){
+    Provider.of<ProfileProvider>(context).updateMasterEducation(selectedBachelorField!, selectedMasterUniversity!, selectedMasterYear!);
+    Provider.of<ProfileProvider>(context).updateBachelorEducation(selectedBachelorField!, selectedBachelorUniversity!, selectedBachelorYear!);
+    Provider.of<ProfileProvider>(context).updateController(bioController);
+
+  }
   List<String> fields = ["Computer Science", "Engineering", "Business", "Medicine"];
   List<String> universities = ["Harvard", "Stanford", "MIT", "Oxford"];
   List<String> years = List.generate(50, (index) => (1975 + index).toString());
@@ -171,6 +179,7 @@ class _BioSetupScreenState extends State<BioSetupScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
+                          addValues();
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => AddExperienceScreen()),
@@ -188,6 +197,7 @@ class _BioSetupScreenState extends State<BioSetupScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+                        addValues();
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => AddExperienceScreen()),

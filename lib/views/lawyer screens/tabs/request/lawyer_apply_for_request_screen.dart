@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:fyp2/views/tabs/request/case_detail_overview_screen.dart';
+import './lawyer_case_detail_overview_screen.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
-class ApplyForRequestScreen extends StatefulWidget {
+class LawyerApplyForRequestScreen extends StatefulWidget {
   String id;
-  ApplyForRequestScreen(this.id);
+  LawyerApplyForRequestScreen(this.id);
   @override
-  _ApplyForRequestScreenState createState() => _ApplyForRequestScreenState();
+  _LawyerApplyForRequestScreenState createState() => _LawyerApplyForRequestScreenState();
 }
 
-class _ApplyForRequestScreenState extends State<ApplyForRequestScreen> {
+class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -177,7 +177,7 @@ class _ApplyForRequestScreenState extends State<ApplyForRequestScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CaseDetailOverviewScreen(widget.id,_nameController.text.toString(),
+                              builder: (context) => LawyerCaseDetailOverviewScreen(widget.id,_nameController.text.toString(),
                               _phoneController.text.toString(),_selectedIssue.toString(),_detailsController.text.toString()),
                             ),
                           );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import './lawyer screens/profileSetup/setup_profile_screen.dart';
-import 'home_screen.dart';
+import 'lawyer screens/lawyer_home_screen.dart';
 
 class VerificationScreen extends StatefulWidget {
   final String verificationId;

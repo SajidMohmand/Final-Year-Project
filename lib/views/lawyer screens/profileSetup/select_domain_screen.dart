@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fyp2/views/home_screen.dart';
+import 'package:fyp2/views/lawyer%20screens/lawyer_home_screen.dart';
 
 import 'basic_info_screen.dart';
 

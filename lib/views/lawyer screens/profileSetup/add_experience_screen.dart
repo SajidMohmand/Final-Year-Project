@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fyp2/providers/profile_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'basic_info_screen.dart';
 
@@ -32,6 +34,8 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(title: Text("Setup Profile")),
 

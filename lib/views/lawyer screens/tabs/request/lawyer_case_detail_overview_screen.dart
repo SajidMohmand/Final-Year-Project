@@ -3,10 +3,10 @@ import 'package:fyp2/models/lawyer.dart';
 import 'package:fyp2/providers/lawyer_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/form_provider.dart';
-import '../../../providers/request_provider.dart';
+import '../../../../providers/form_provider.dart';
+import '../../../../providers/request_provider.dart';
 
-class CaseDetailOverviewScreen extends StatelessWidget {
+class LawyerCaseDetailOverviewScreen extends StatelessWidget {
 
 
   final String id;
@@ -15,7 +15,7 @@ class CaseDetailOverviewScreen extends StatelessWidget {
   final String issue;
   final String details;
 
-  CaseDetailOverviewScreen(this.id,this.name, this.phone, this.issue, this.details);
+  LawyerCaseDetailOverviewScreen(this.id,this.name, this.phone, this.issue, this.details);
 
 
   @override

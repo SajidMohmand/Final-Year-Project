@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../widgets/app_drawer.dart';
-import 'tabs/chatbot_screen.dart';
-import 'tabs/find_lawyer_screen.dart';
-import 'tabs/request_screen.dart';
-import 'tabs/chat_screen.dart';
-import 'tabs/profile_screen.dart';
+import '../../widgets/app_drawer.dart';
+import './tabs/lawyer_chatbot_screen.dart';
+import './tabs/lawyer_find_lawyer_screen.dart';
+import './tabs/lawyer_request_screen.dart';
+import './tabs/lawyer_chat_screen.dart';
+import './tabs/lawyer_profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,11 +17,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    ChatbotScreen(),
-    FindLawyerScreen(),
-    RequestScreen(),
-    ChatScreen(),
-    ProfileScreen(),
+    LawyerChatbotScreen(),
+    LawyerFindLawyerScreen(),
+    LawyerRequestScreen(),
+    LawyerChatScreen(),
+    LawyerProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

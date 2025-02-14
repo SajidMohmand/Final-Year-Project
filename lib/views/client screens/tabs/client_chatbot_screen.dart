@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/app_drawer.dart';
+import '../../../widgets/app_drawer.dart';
 
-class ChatbotScreen extends StatefulWidget {
+class ClientChatbotScreen extends StatefulWidget {
   @override
-  _ChatbotScreenState createState() => _ChatbotScreenState();
+  _ClientChatbotScreenState createState() => _ClientChatbotScreenState();
 }
 
-class _ChatbotScreenState extends State<ChatbotScreen> {
+class _ClientChatbotScreenState extends State<ClientChatbotScreen> {
   TextEditingController _queryController = TextEditingController();
 
   @override

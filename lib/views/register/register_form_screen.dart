@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fyp2/views/home_screen.dart';
+import 'package:fyp2/views/lawyer%20screens/lawyer_home_screen.dart';
 import '../login/login_screen.dart';
 import '../verification_screen.dart';
 
@@ -78,7 +78,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Hi, ${widget.role}",
+          "Hi, ${widget.role.substring(1)}",
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.brown.shade700),
         ),
       ),

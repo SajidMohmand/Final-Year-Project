@@ -8,12 +8,12 @@ import './tabs/client_request_screen.dart';
 import './tabs/client_chat_screen.dart';
 import './tabs/client_profile_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class ClientHomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _ClientHomeScreenState createState() => _ClientHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ClientHomeScreenState extends State<ClientHomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [

@@ -77,7 +77,7 @@ class LoginScreen extends StatelessWidget {
                       child: RoleBox(
                         title: "Client",
                         imagePath: "assets/images/client.png",
-                        isSelected: provider.selectedRole == "Client",
+                        isSelected: provider.selectedRole == "lClient",
                         onTap: () => provider.selectRole("lClient"),
                       ),
                     ),
@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                       child: RoleBox(
                         title: "Lawyer",
                         imagePath: "assets/images/lawyer.png",
-                        isSelected: provider.selectedRole == "Lawyer",
+                        isSelected: provider.selectedRole == "lLawyer",
                         onTap: () => provider.selectRole("lLawyer"),
                       ),
                     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fyp2/views/client%20screens/client_home_screen.dart';
 import './lawyer screens/profileSetup/setup_profile_screen.dart';
 import 'lawyer screens/lawyer_home_screen.dart';
 
@@ -142,7 +143,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     }else{
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(builder: (context) => ClientHomeScreen()),
                       );
                     }
 

@@ -116,7 +116,7 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          MaterialPageRoute(builder: (context) => LawyerHomeScreen()),
                         );},
                       child: Text("Skip", style: TextStyle(fontSize: 18, color: Colors.grey)),
                     ),
@@ -128,7 +128,7 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(builder: (context) => LawyerHomeScreen()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

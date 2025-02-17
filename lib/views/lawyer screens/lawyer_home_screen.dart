@@ -8,12 +8,12 @@ import './tabs/lawyer_request_screen.dart';
 import './tabs/lawyer_chat_screen.dart';
 import './tabs/lawyer_profile_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class LawyerHomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _LawyerHomeScreenState createState() => _LawyerHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _LawyerHomeScreenState extends State<LawyerHomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [

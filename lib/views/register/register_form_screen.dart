@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fyp2/views/lawyer%20screens/lawyer_home_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../client screens/client_home_screen.dart';
+import '../lawyer screens/profileSetup/setup_profile_screen.dart';
 import '../login/login_screen.dart';
 import '../verification_screen.dart';
 
@@ -73,6 +77,87 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
 
+
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser == null) {
+        return null; // The user canceled the sign-in process
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+
+
+
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      print("Google sign-in error: ${e.toString()}");
+      return null;
+    }
+  }
+  Future<UserCredential?> signInWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        final OAuthCredential credential =
+        FacebookAuthProvider.credential(result.accessToken!.tokenString);
+
+        return await FirebaseAuth.instance.signInWithCredential(credential);
+      }
+    } catch (e) {
+      print("Facebook sign-in error: $e");
+      return null;
+    }
+    return null;
+  }
+
+  void handleLogin(UserCredential? userCredential) {
+    if (userCredential != null) {
+      if(widget.role.substring(0,2) == "rL"){
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileSetupScreen(),
+          ),
+        );
+      }else{
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClientHomeScreen(),
+          ),
+        );
+      }
+
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login failed. Please try again.")),
+      );
+    }
+  }
+  Future<void> handleGoogleSignIn() async {
+    UserCredential? userCredential = await signInWithGoogle();
+    if (userCredential == null) {
+      print("Google sign-in failed");
+      return; // Stop execution if sign-in fails
+    }
+    handleLogin(userCredential);
+  }
+
+  Future<void> handleFacebookSignIn() async {
+    UserCredential? userCredential = await signInWithFacebook();
+    handleLogin(userCredential);
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,11 +208,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildSocialButton("Google", "assets/images/google.png"),
+                        _buildSocialButton("Google", "assets/images/google.png", handleGoogleSignIn),
                         SizedBox(width: 20),
-                        _buildSocialButton("Facebook", "assets/images/facebook.png"),
+                        _buildSocialButton("Facebook", "assets/images/facebook.png", handleFacebookSignIn),
                       ],
                     ),
+
 
                   ],
                 ),
@@ -171,12 +257,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
 }
-Widget _buildSocialButton(String text, String assetPath) {
+Widget _buildSocialButton(String text, String assetPath, Function onTap) {
   return Expanded(
     child: ElevatedButton.icon(
-      onPressed: () {
-
-      },
+      onPressed: () => onTap(),
       icon: Image.asset(assetPath, width: 24, height: 24),
       label: Text(text, style: TextStyle(fontSize: 16, color: Colors.brown)),
       style: ElevatedButton.styleFrom(
@@ -191,4 +275,7 @@ Widget _buildSocialButton(String text, String assetPath) {
     ),
   );
 }
+
+
+
 

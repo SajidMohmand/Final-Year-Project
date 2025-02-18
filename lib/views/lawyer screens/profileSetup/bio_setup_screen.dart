@@ -18,12 +18,26 @@ class _BioSetupScreenState extends State<BioSetupScreen> {
   String? selectedBachelorUniversity;
   String? selectedBachelorYear;
 
-  void addValues(){
-    Provider.of<ProfileProvider>(context).updateMasterEducation(selectedBachelorField!, selectedMasterUniversity!, selectedMasterYear!);
-    Provider.of<ProfileProvider>(context).updateBachelorEducation(selectedBachelorField!, selectedBachelorUniversity!, selectedBachelorYear!);
-    Provider.of<ProfileProvider>(context).updateController(bioController);
+  void addValues() {
+    if (selectedMasterField != null &&
+        selectedMasterUniversity != null &&
+        selectedMasterYear != null) {
+      Provider.of<ProfileProvider>(context, listen: false).updateMasterEducation(
+        selectedMasterField!, selectedMasterUniversity!, selectedMasterYear!,
+      );
+    }
 
+    if (selectedBachelorField != null &&
+        selectedBachelorUniversity != null &&
+        selectedBachelorYear != null) {
+      Provider.of<ProfileProvider>(context, listen: false).updateBachelorEducation(
+        selectedBachelorField!, selectedBachelorUniversity!, selectedBachelorYear!,
+      );
+    }
+
+    Provider.of<ProfileProvider>(context, listen: false).updateController(bioController);
   }
+
   List<String> fields = ["Computer Science", "Engineering", "Business", "Medicine"];
   List<String> universities = ["Harvard", "Stanford", "MIT", "Oxford"];
   List<String> years = List.generate(50, (index) => (1975 + index).toString());

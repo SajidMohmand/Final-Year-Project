@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fyp2/providers/form_provider.dart';
 import 'package:fyp2/providers/lawyer_provider.dart';
 import 'package:fyp2/providers/profile_provider.dart';
@@ -14,6 +15,12 @@ void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FacebookAuth.instance.webAndDesktopInitialize(
+    appId: "1194511472029210",
+    cookie: true,
+    xfbml: true,
+    version: "v13.0",
+  );
 
   runApp(
     MultiProvider(

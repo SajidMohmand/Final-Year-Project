@@ -6,7 +6,7 @@ import '../../../models/lawyer.dart';
 import '../../../models/request.dart';
 import '../../../providers/lawyer_provider.dart';
 
-class LawyerProfileScreen extends StatelessWidget {
+class LawyerViewProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +83,7 @@ class LawyerProfileScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditLawyerProfileScreen(),
+                        builder: (context) => EditLawyerViewProfileScreen(),
                       ),
                     );
                   },
@@ -412,12 +412,12 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
   }
 }
 
-class EditLawyerProfileScreen extends StatefulWidget {
+class EditLawyerViewProfileScreen extends StatefulWidget {
   @override
-  _EditLawyerProfileScreenState createState() => _EditLawyerProfileScreenState();
+  _EditLawyerViewProfileScreenState createState() => _EditLawyerViewProfileScreenState();
 }
 
-class _EditLawyerProfileScreenState extends State<EditLawyerProfileScreen> {
+class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScreen> {
   String firstName = 'John';
   String lastName = 'Doe';
   String phoneNumber = '1234567890';

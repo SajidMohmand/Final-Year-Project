@@ -137,7 +137,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       }
 
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Login failed. Please try again.")),
       );
     }

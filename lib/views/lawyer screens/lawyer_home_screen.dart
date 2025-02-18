@@ -6,7 +6,7 @@ import './tabs/lawyer_chatbot_screen.dart';
 import './tabs/lawyer_find_lawyer_screen.dart';
 import './tabs/lawyer_request_screen.dart';
 import './tabs/lawyer_chat_screen.dart';
-import './tabs/lawyer_profile_screen.dart';
+import './tabs/lawyer_view_profile_screen.dart';
 
 class LawyerHomeScreen extends StatefulWidget {
   @override
@@ -21,7 +21,7 @@ class _LawyerHomeScreenState extends State<LawyerHomeScreen> {
     LawyerFindLawyerScreen(),
     LawyerRequestScreen(),
     LawyerChatScreen(),
-    LawyerProfileScreen(),
+    LawyerViewProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

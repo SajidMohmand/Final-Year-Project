@@ -5,12 +5,24 @@ import 'package:uuid/uuid.dart';
 
 class RequestProvider with ChangeNotifier {
   List<Request> _requests = [
-    // Request(
-    //   id: "32434",
-    //   lawyer: Lawyer(id: "102", name: "Emma Smith", domain: "Corporate Law", image: 'assets/images/lawyer1', rating: '4.4'),
-    //   status: RequestStatus.Accepted,
-    //   formDetails: {"issue": "Company contract dispute"},
-    // ),
+    Request(
+      id: "32434",
+      lawyer: Lawyer(id: "102", name: "Emma Smith", domain: "Corporate Law", image: 'assets/images/lawyer1', rating: '4.4'),
+      status: RequestStatus.Accepted,
+      formDetails: {"issue": "Company contract dispute"},
+    ),
+    Request(
+      id: "32434",
+      lawyer: Lawyer(id: "102", name: "Emma Smith", domain: "Corporate Law", image: 'assets/images/lawyer1', rating: '4.4'),
+      status: RequestStatus.Awaiting,
+      formDetails: {"issue": "Company contract dispute"},
+    ),
+    Request(
+      id: "32434",
+      lawyer: Lawyer(id: "102", name: "Emma Smith", domain: "Corporate Law", image: 'assets/images/lawyer1', rating: '4.4'),
+      status: RequestStatus.Declined,
+      formDetails: {"issue": "Company contract dispute"},
+    ),
   ];
 
   List<Request> get requests => [..._requests];

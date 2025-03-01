@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:fyp2/providers/client_provider.dart';
+import 'package:fyp2/providers/complaint_provider.dart';
 import 'package:fyp2/providers/form_provider.dart';
+import 'package:fyp2/providers/lawyer/lawyer_request_provider.dart';
 import 'package:fyp2/providers/lawyer_provider.dart';
 import 'package:fyp2/providers/profile_provider.dart';
 import 'package:fyp2/providers/request_provider.dart';
@@ -31,6 +34,9 @@ void main() async{
         ChangeNotifierProvider(create: (context) => FormProvider()),
         ChangeNotifierProvider(create: (context) => RequestProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
+        ChangeNotifierProvider(create: (context) => ComplaintProvider()),
+        ChangeNotifierProvider(create: (context) => ClientProvider()),
+        ChangeNotifierProvider(create: (context) => LawyerRequestProvider()),
       ],
       child: MyApp(),
     ),

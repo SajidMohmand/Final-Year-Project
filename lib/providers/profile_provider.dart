@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ProfileProvider with ChangeNotifier {
   // Bio Controller
-  late final TextEditingController bioController;
+  late TextEditingController bioController = TextEditingController();
 
   void updateController(bio){
     bioController = bio;
@@ -16,27 +16,47 @@ class ProfileProvider with ChangeNotifier {
   String? selectedBachelorUniversity;
   String? selectedBachelorYear;
 
-  // Experience List
-  List<Map<String, TextEditingController>> experiences = [
-    {
-      "title": TextEditingController(),
-      "company": TextEditingController(),
-      "location": TextEditingController(),
-      "startDate": TextEditingController(),
-      "endDate": TextEditingController(),
-    }
-  ];
 
-  // Personal Details
-  String? selectedGender;
-  String? selectedCountry;
-  String? selectedCity;
+
+  List<Map<String, String>> _experiences = [];
+
+  List<Map<String, String>> get experiences => _experiences;
+
+  void addExperience(Map<String, String> experience) {
+    _experiences.add(experience);
+    notifyListeners();
+  }
+
+  void setExperiences(List<Map<String, String>> experiences) {
+    _experiences = experiences;
+    notifyListeners();
+  }
+
+  void clearExperiences() {
+    _experiences.clear();
+    notifyListeners();
+  }
+
+  String? gender;
+  String? country;
+  String? city;
+
+  void updateProfile({String? newGender, String? newCountry, String? newCity}) {
+    gender = newGender ?? gender;
+    country = newCountry ?? country;
+    city = newCity ?? city;
+    notifyListeners();
+  }
+
   String? selectedAvailability;
   TextEditingController availabilityController = TextEditingController();
 
   // Selected Domains
   List<String> selectedDomains = [];
-
+  void updateDomains(List<String> domains) {
+    selectedDomains = domains;
+    notifyListeners();
+  }
   // Methods to Update Profile Data
   void updateMasterEducation(String field, String university, String year) {
     selectedMasterField = field;
@@ -53,47 +73,22 @@ class ProfileProvider with ChangeNotifier {
   }
 
   void updatePersonalDetails({
-    String? gender,
-    String? country,
-    String? city,
     String? availability,
   }) {
-    selectedGender = gender;
-    selectedCountry = country;
-    selectedCity = city;
     selectedAvailability = availability;
     notifyListeners();
   }
 
-  void addExperience() {
-    experiences.add({
-      "title": TextEditingController(),
-      "company": TextEditingController(),
-      "location": TextEditingController(),
-      "startDate": TextEditingController(),
-      "endDate": TextEditingController(),
-    });
-    notifyListeners();
-  }
 
-  void removeExperience(int index) {
-    experiences.removeAt(index);
-    notifyListeners();
-  }
 
-  void updateDomains(List<String> domains) {
-    selectedDomains = domains;
-    notifyListeners();
-  }
+
 
   // Dispose controllers to prevent memory leaks
   @override
   void dispose() {
     bioController.dispose();
     availabilityController.dispose();
-    for (var exp in experiences) {
-      exp.values.forEach((controller) => controller.dispose());
-    }
+
     super.dispose();
   }
 }

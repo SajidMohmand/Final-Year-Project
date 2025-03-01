@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import './lawyer_case_detail_overview_screen.dart';
+import 'package:fyp2/views/drawer/complaint/ClientListScreen.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
-class LawyerApplyForRequestScreen extends StatefulWidget {
-  String id;
-  LawyerApplyForRequestScreen(this.id);
+import 'complaint_detail_overview_screen.dart';
+
+class LawyerApplyForComplaintScreen extends StatefulWidget {
+  final String id;
+  LawyerApplyForComplaintScreen(this.id);
+
   @override
-  _LawyerApplyForRequestScreenState createState() => _LawyerApplyForRequestScreenState();
+  _LawyerApplyForComplaintScreenState createState() => _LawyerApplyForComplaintScreenState();
 }
 
-class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScreen> {
+class _LawyerApplyForComplaintScreenState extends State<LawyerApplyForComplaintScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -18,19 +21,18 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
   String? _selectedIssue;
   File? _selectedFile;
 
-  final List<String> _cyberIssues = [
-    "Cyberbullying",
-    "Identity Theft",
-    "Hacking / Unauthorized Access",
-    "Online Fraud / Scam",
-    "Privacy Violation",
-    "Defamation / Harassment",
+  final List<String> _complaintIssues = [
+    "Unethical Behavior",
+    "Overcharging",
+    "Negligence",
+    "Misrepresentation",
+    "Conflict of Interest",
+    "Lack of Communication",
     "Others (Specify)"
   ];
 
   Future<void> _pickFile() async {
-    final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _selectedFile = File(pickedFile.path);
@@ -41,7 +43,7 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Case Details")),
+      appBar: AppBar(title: Text("Complaint Form")),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -51,7 +53,7 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Case Details (optional)",
+                  "Complaint Details",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 10),
@@ -61,19 +63,17 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
                 _buildTextField(_nameController, "Full Name", "Enter your name"),
                 SizedBox(height: 20),
 
-                _buildTextField(_phoneController, "Phone Number",
-                    "Enter a valid phone number",
-                    keyboardType: TextInputType.phone),
+                _buildTextField(_phoneController, "Phone Number", "Enter a valid phone number", keyboardType: TextInputType.phone),
                 SizedBox(height: 20),
 
                 DropdownButtonFormField<String>(
                   value: _selectedIssue,
                   decoration: InputDecoration(
-                    labelText: "Type of Cyber Issue",
+                    labelText: "Type of Complaint",
                     filled: true,
-                    fillColor: Colors.brown.withValues(alpha: 0.1),
+                    fillColor: Colors.brown.withOpacity(0.1),
                   ),
-                  items: _cyberIssues.map((issue) {
+                  items: _complaintIssues.map((issue) {
                     return DropdownMenuItem(value: issue, child: Text(issue));
                   }).toList(),
                   onChanged: (value) {
@@ -87,11 +87,11 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
                 TextFormField(
                   controller: _detailsController,
                   decoration: InputDecoration(
-                    labelText: "Incident Details",
-                    hintText: "Describe the incident in detail...",
+                    labelText: "Complaint Details",
+                    hintText: "Describe your complaint in detail...",
                     filled: true,
                     alignLabelWithHint: true,
-                    fillColor: Colors.brown.withValues(alpha: 0.1),
+                    fillColor: Colors.brown.withOpacity(0.1),
                   ),
                   maxLines: 6,
                 ),
@@ -101,7 +101,7 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Attach File (Optional)",
+                      "Attach Evidence (Optional)",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),
@@ -123,7 +123,7 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: Colors.brown.withValues(alpha: 0.1),
+                                color: Colors.brown.withOpacity(0.1),
                               ),
                               child: Text(
                                 "No file selected",
@@ -177,11 +177,17 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => LawyerCaseDetailOverviewScreen(widget.id,_nameController.text.toString(),
-                              _phoneController.text.toString(),_selectedIssue.toString(),_detailsController.text.toString()),
+                              builder: (context) => ComplaintDetailOverviewScreen(
+                                widget.id,
+                                _nameController.text,
+                                _phoneController.text,
+                                _selectedIssue ?? "No Issue Selected",
+                                _detailsController.text,
+                                _selectedFile,
+                              ),
                             ),
                           );
-                          print("Request Submitted");
+                          print("Complaint Submitted");
                         },
                         child: Text("Next", style: TextStyle(color: Colors.white)),
                         style: ElevatedButton.styleFrom(
@@ -204,19 +210,17 @@ class _LawyerApplyForRequestScreenState extends State<LawyerApplyForRequestScree
           ),
         ),
       ),
-    );
+      );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label,
-      String validationMessage,
-      {TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildTextField(TextEditingController controller, String label, String validationMessage, {TextInputType keyboardType = TextInputType.text}) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
         filled: true,
-        fillColor: Colors.brown.withValues(alpha: 0.1),
+        fillColor: Colors.brown.withOpacity(0.1),
       ),
     );
   }

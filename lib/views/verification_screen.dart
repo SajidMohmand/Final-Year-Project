@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fyp2/providers/register_provider.dart';
 import 'package:fyp2/views/client%20screens/client_home_screen.dart';
+import 'package:provider/provider.dart';
 import './lawyer screens/profileSetup/setup_profile_screen.dart';
 import 'lawyer screens/lawyer_home_screen.dart';
 
@@ -134,13 +136,23 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       _agreedToTerms = agreedToTerms;
                     });
                     Navigator.pop(context);
-
-                    if(widget.role.substring(0,2) == 'rL'){
+                    if(widget.role.substring(0,2) == 'lL'){
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LawyerHomeScreen()),
+                      );
+                    }else if(widget.role.substring(0,2) == 'lC'){
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => ClientHomeScreen()),
+                      );
+                    }else if(widget.role.substring(0,2) == 'rL'){
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => ProfileSetupScreen()),
                       );
                     }else{
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => ClientHomeScreen()),
@@ -260,8 +272,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   Widget _buildCodeField(int index) {
     return Container(
-      width: 50,
-      height: 70,
+      width: 40,
+      height: 60,
       margin: EdgeInsets.symmetric(horizontal: 5),
       child: TextField(
         controller: controllers[index],

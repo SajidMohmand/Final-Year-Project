@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../widgets/app_drawer.dart';
 import './tabs/lawyer_chatbot_screen.dart';
-import './tabs/lawyer_find_lawyer_screen.dart';
 import './tabs/lawyer_request_screen.dart';
 import './tabs/lawyer_chat_screen.dart';
 import './tabs/lawyer_view_profile_screen.dart';
@@ -18,7 +17,6 @@ class _LawyerHomeScreenState extends State<LawyerHomeScreen> {
 
   final List<Widget> _screens = [
     LawyerChatbotScreen(),
-    LawyerFindLawyerScreen(),
     LawyerRequestScreen(),
     LawyerChatScreen(),
     LawyerViewProfileScreen(),
@@ -51,10 +49,7 @@ class _LawyerHomeScreenState extends State<LawyerHomeScreen> {
               icon: Icon(Icons.chat),
               label: 'Chatbot',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Find Lawyer',
-            ),
+
             BottomNavigationBarItem(
               icon: Transform.rotate(
                 angle: -pi / 4,

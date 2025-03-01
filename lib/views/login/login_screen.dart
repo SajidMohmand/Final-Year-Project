@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:fyp2/views/admin%20screens/admin_login.dart';
 import 'package:provider/provider.dart';
 import '../../providers/register_provider.dart';
 import 'login_form_screen.dart';
 import '../register/register_form_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String role = "";
+
+  void updateRole(String rol){
+    setState(() {
+      role = rol;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +34,7 @@ class LoginScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        LoginFormScreen(role: "Admin",),
+                        AdminLogin(role: "Admin",),
                   ),
                 );
               },
@@ -77,8 +92,10 @@ class LoginScreen extends StatelessWidget {
                       child: RoleBox(
                         title: "Client",
                         imagePath: "assets/images/client.png",
-                        isSelected: provider.selectedRole == "lClient",
-                        onTap: () => provider.selectRole("lClient"),
+                        isSelected: role == "lClient",
+                        onTap: (){
+                          updateRole("lClient");
+                        },
                       ),
                     ),
                     SizedBox(width: 20),
@@ -86,8 +103,10 @@ class LoginScreen extends StatelessWidget {
                       child: RoleBox(
                         title: "Lawyer",
                         imagePath: "assets/images/lawyer.png",
-                        isSelected: provider.selectedRole == "lLawyer",
-                        onTap: () => provider.selectRole("lLawyer"),
+                        isSelected: role == "lLawyer",
+                        onTap: () {
+                          updateRole("lLawyer");
+                        },
                       ),
                     ),
                   ],
@@ -102,12 +121,12 @@ class LoginScreen extends StatelessWidget {
                 return SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: provider.selectedRole.isNotEmpty
+                    onPressed: role.isNotEmpty
                         ? () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginFormScreen(role: provider.selectedRole),
+                          builder: (context) => LoginFormScreen(role: role),
                         ),
                       );
                     }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fyp2/views/lawyer%20screens/lawyer_home_screen.dart';
-
-import 'basic_info_screen.dart';
+import 'package:provider/provider.dart';
+import '../lawyer_home_screen.dart';
+import 'package:fyp2/providers/profile_provider.dart';
 
 class SelectDomainScreen extends StatefulWidget {
   @override
@@ -12,7 +12,6 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
   TextEditingController searchController = TextEditingController();
   List<String> allDomains = ["Cyber Law", "Intellectual Property", "Human Rights", "Corporate Law", "Criminal Law"];
   List<String> filteredDomains = [];
-  List<String> selectedDomains = [];
 
   @override
   void initState() {
@@ -28,26 +27,11 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
     });
   }
 
-  void selectDomain(String domain) {
-    setState(() {
-      searchController.text = domain; // Display domain in search bar
-      if (!selectedDomains.contains(domain)) {
-        selectedDomains.add(domain);
-      }
-    });
-  }
-
-  void removeDomain(String domain) {
-    setState(() {
-      selectedDomains.remove(domain);
-      if (searchController.text == domain) {
-        searchController.clear();
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final profileProvider = Provider.of<ProfileProvider>(context);
+    List<String> selectedDomains = profileProvider.selectedDomains;
+
     return Scaffold(
       appBar: AppBar(title: Text("Select Domain")),
       body: Padding(
@@ -79,7 +63,12 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
                   return ListTile(
                     title: Text(filteredDomains[index]),
                     trailing: Icon(Icons.add, color: Colors.green),
-                    onTap: () => selectDomain(filteredDomains[index]),
+                    onTap: () {
+                      if (!selectedDomains.contains(filteredDomains[index])) {
+                        selectedDomains.add(filteredDomains[index]);
+                        profileProvider.updateDomains(selectedDomains);
+                      }
+                    },
                   );
                 },
               ),
@@ -94,12 +83,14 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
                 return Chip(
                   backgroundColor: Colors.brown.shade100,
                   label: Text(domain),
-                  deleteIcon: Icon(Icons.clear, size: 18, color: Colors.black), // Cross icon with no background
-                  onDeleted: () => removeDomain(domain),
+                  deleteIcon: Icon(Icons.clear, size: 18, color: Colors.black),
+                  onDeleted: () {
+                    selectedDomains.remove(domain);
+                    profileProvider.updateDomains(selectedDomains);
+                  },
                 );
               }).toList(),
             ),
-
 
             SizedBox(height: 30),
 
@@ -109,28 +100,38 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black), // Black border
-                      borderRadius: BorderRadius.circular(8), // Optional: rounded corners
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: TextButton(
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => LawyerHomeScreen()),
-                        );},
+                        );
+                      },
                       child: Text("Skip", style: TextStyle(fontSize: 18, color: Colors.grey)),
                     ),
                   ),
                 ),
-                SizedBox(width: 20,),
+                SizedBox(width: 20),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LawyerHomeScreen()),
-                      );
+                      if (selectedDomains.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Please select at least one domain."),
+                          ),
+                        );
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LawyerHomeScreen()),
+                        );
+                      }
                     },
+
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.brown,
                       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
@@ -143,7 +144,7 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 20),
           ],
         ),
       ),

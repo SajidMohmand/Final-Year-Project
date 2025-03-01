@@ -1,26 +1,32 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:fyp2/models/client.dart';
 import 'package:fyp2/models/lawyer.dart';
+import 'package:fyp2/providers/client_provider.dart';
+import 'package:fyp2/providers/complaint_provider.dart';
 import 'package:fyp2/providers/lawyer_provider.dart';
+import 'package:fyp2/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/form_provider.dart';
 import '../../../../providers/request_provider.dart';
 
-class LawyerCaseDetailOverviewScreen extends StatelessWidget {
-
-
+class ComplaintDetailOverviewScreen extends StatelessWidget {
   final String id;
   final String name;
   final String phone;
   final String issue;
   final String details;
+  File? selectedFile;
 
-  LawyerCaseDetailOverviewScreen(this.id,this.name, this.phone, this.issue, this.details);
-
+  ComplaintDetailOverviewScreen(
+      this.id, this.name, this.phone, this.issue, this.details,this.selectedFile);
 
   @override
   Widget build(BuildContext context) {
-    final lawyer = Provider.of<LawyerProvider>(context).getLawyerById(id);
+    final client = Provider.of<ClientProvider>(context).getClientById(id);
+
     return Scaffold(
       appBar: AppBar(title: Text("Review Request Details")),
       body: Column(
@@ -31,7 +37,7 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: Colors.brown.withValues(alpha: 0.1),
+                color: Colors.brown.withOpacity(0.1),
               ),
               child: SingleChildScrollView(
                 child: Padding(
@@ -39,14 +45,11 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildLawyerProfile(lawyer!),
+                      _buildClientProfile(client!),
                       SizedBox(height: 20),
-            
                       Divider(thickness: 1, color: Colors.grey),
                       SizedBox(height: 20),
-            
                       _buildFormDetails(),
-            
                       SizedBox(height: 30),
                     ],
                   ),
@@ -74,11 +77,25 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
             Provider.of<FormProvider>(context, listen: false)
                 .saveFormDetails(name, phone, issue, details);
 
-            Provider.of<FormProvider>(context, listen: false)
-                .saveFormDetails(name, phone, issue, details);
-
-            final lawyer = Provider.of<LawyerProvider>(context,listen: false).getLawyerById(id);
-            Provider.of<RequestProvider>(context, listen: false).addRequest(name, phone, issue, details,lawyer!);
+            final client = Provider.of<ClientProvider>(context, listen: false)
+                .getClientById(id);
+            Provider.of<ComplaintProvider>(context, listen: false).fileComplaint(
+              complainantType: "lawyer",
+              complaintNum: client!.complaintNum,
+              complainantDetails: Lawyer(
+                id: "123",
+                name: "jack smith",
+                domain: "Cyber law",
+                image: "assets/images/lawyer.png",
+                rating: "4.1",
+              ),
+              respondentDetails: client!,
+              complaintDetails: {
+                "issue": issue,
+                "details": details,
+                "evidence": selectedFile != null ? selectedFile!.path : "",
+              },
+            );
 
 
             showDialog(
@@ -89,13 +106,9 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
                     Navigator.of(dialogContext).pop();
                   }
                   if (context.mounted) {
-                    Navigator.of(context).pop();
-
-                      if (context.mounted) {
-                        for(int i=0; i<3; i++){
-                          Navigator.of(context).pop();
-                        }
-                      }
+                    for (int i = 0; i < 3; i++) {
+                      Navigator.of(context).pop();
+                    }
                   }
                 });
 
@@ -116,8 +129,9 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
                         Icon(Icons.check_circle, color: Colors.brown, size: 50),
                         SizedBox(height: 15),
                         Text(
-                          "Request sent successfully",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                          "Complaint sent to admin successfully",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w400),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 10),
@@ -128,11 +142,8 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
                 );
               },
             );
-
-
-
           },
-          child: Text("Send Request", style: TextStyle(color: Colors.white)),
+          child: Text("Send Complaint", style: TextStyle(color: Colors.white)),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
             backgroundColor: Colors.brown,
@@ -146,12 +157,13 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
       ),
     );
   }
-  Widget _buildLawyerProfile(Lawyer lawyer) {
+
+  Widget _buildClientProfile(Client client) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Lawyer Details",
+          "Client Details",
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
         ),
         SizedBox(height: 10),
@@ -162,37 +174,30 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
               backgroundColor: Colors.grey[300],
               child: ClipOval(
                 child: Image.asset(
-                  lawyer.image,
+                  client.image,
                   fit: BoxFit.cover,
                   width: 60,
                   height: 60,
                   errorBuilder: (context, error, stackTrace) {
-                    return Icon(Icons.person, size: 40, color: Colors.grey[600]);
+                    return Icon(Icons.person,
+                        size: 40, color: Colors.grey[600]);
                   },
                 ),
               ),
             ),
-
             SizedBox(width: 15),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  lawyer.name,
+                  client.name,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  lawyer.domain,
+                  client.phone,
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 SizedBox(height: 5),
-                Row(
-                  children: [
-                    Icon(Icons.star, color: Colors.amber, size: 18),
-                    SizedBox(width: 4),
-                    Text(lawyer.rating.toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  ],
-                ),
               ],
             ),
           ],
@@ -207,8 +212,8 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
       children: [
         _buildDetailRow("Name", name),
         _buildDetailRow("Phone Number", phone),
-        _buildDetailRow("Cyber Issue", issue),
-        _buildIncidentDetailRow("Incident Details", details),
+        _buildDetailRow("Case Type", issue),
+        _buildIncidentDetailRow("Case Details", details),
       ],
     );
   }
@@ -223,7 +228,8 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
             "$label ",
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
           ),
-          Text(value, style: TextStyle(fontSize: 14,fontWeight: FontWeight.w600)),
+          Text(value,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -239,9 +245,9 @@ class LawyerCaseDetailOverviewScreen extends StatelessWidget {
             "$label",
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
           ),
-          SizedBox(height: 10,),
+          SizedBox(height: 10),
           Padding(
-            padding: EdgeInsets.only(left: 5,right: 5),
+            padding: EdgeInsets.only(left: 5, right: 5),
             child: Center(
               child: Text(
                 value,

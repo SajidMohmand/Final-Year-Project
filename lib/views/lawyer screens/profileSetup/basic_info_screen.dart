@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/profile_provider.dart';
 import './select_domain_screen.dart';
 
 class BasicInfoScreen extends StatefulWidget {
@@ -7,12 +9,11 @@ class BasicInfoScreen extends StatefulWidget {
 }
 
 class _BasicInfoScreenState extends State<BasicInfoScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   String? selectedGender;
   String? selectedCountry;
   String? selectedCity;
-  String? selectedAvailability;
-
-  TextEditingController availabilityController = TextEditingController();
 
   final List<String> countries = ['Pakistan', 'USA', 'UK', 'India', 'Canada'];
   final Map<String, List<String>> cities = {
@@ -25,112 +26,119 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final profileProvider = Provider.of<ProfileProvider>(context);
+
     return Scaffold(
       appBar: AppBar(title: Text("Basic Information")),
       body: Padding(
         padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Please provide your basic information",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
-            ),
-            SizedBox(height: 20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Please provide your basic information",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400)),
+              SizedBox(height: 20),
 
-            // Gender Selection
-            Text("Gender", style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
-            Row(
-              children: [
-                Radio(
-                  value: "Male",
-                  activeColor: Colors.brown,
-                  groupValue: selectedGender,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedGender = value;
-                    });
-                  },
-                ),
-                Text("Male"),
-                SizedBox(width: 20),
-                Radio(
-                  activeColor: Colors.brown,
-                  value: "Female",
-                  groupValue: selectedGender,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedGender = value;
-                    });
-                  },
-                ),
-                Text("Female"),
-              ],
-            ),
-
-            SizedBox(height: 20),
-
-            // Country Dropdown
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(filled: true,
-                fillColor: Colors.brown.shade100,
+              // Gender Selection
+              Text("Gender", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+              Row(
+                children: [
+                  Radio(
+                    value: "Male",
+                    activeColor: Colors.brown,
+                    groupValue: selectedGender,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value;
+                        profileProvider.updateProfile(newGender: value);
+                      });
+                    },
+                  ),
+                  Text("Male"),
+                  SizedBox(width: 20),
+                  Radio(
+                    activeColor: Colors.brown,
+                    value: "Female",
+                    groupValue: selectedGender,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value;
+                        profileProvider.updateProfile(newGender: value);
+                      });
+                    },
+                  ),
+                  Text("Female"),
+                ],
               ),
-              hint: Text("Select Country"),
-              value: selectedCountry,
-              onChanged: (value) {
-                setState(() {
-                  selectedCountry = value;
-                  selectedCity = null;
-                });
-              },
-              items: countries.map((country) {
-                return DropdownMenuItem(
-                  value: country,
-                  child: Text(country),
-                );
-              }).toList(),
-            ),
+              if (selectedGender == null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    "Please select a gender",
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  ),
+                ),
 
-            SizedBox(height: 20),
+              SizedBox(height: 20),
 
-            // City Dropdown
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(filled: true,
-                fillColor: Colors.brown.shade100,
+              // Country Dropdown
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(filled: true, fillColor: Colors.brown.shade100),
+                hint: Text("Select Country"),
+                value: selectedCountry,
+                validator: (value) => value == null ? "Please select a country" : null,
+                onChanged: (value) {
+                  setState(() {
+                    selectedCountry = value;
+                    selectedCity = null;
+                    profileProvider.updateProfile(newCountry: value);
+                  });
+                },
+                items: countries.map((country) {
+                  return DropdownMenuItem(
+                    value: country,
+                    child: Text(country),
+                  );
+                }).toList(),
               ),
-              hint: Text("Select City"),
-              value: selectedCity,
-              onChanged: (value) {
-                setState(() {
-                  selectedCity = value;
-                });
-              },
-              items: selectedCountry != null
-                  ? cities[selectedCountry]!.map((city) {
-                return DropdownMenuItem(
-                  value: city,
-                  child: Text(city),
-                );
-              }).toList()
-                  : [],
-            ),
 
-            SizedBox(height: 20),
+              SizedBox(height: 20),
 
+              // City Dropdown
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(filled: true, fillColor: Colors.brown.shade100),
+                hint: Text("Select City"),
+                value: selectedCity,
+                validator: (value) => value == null ? "Please select a city" : null,
+                onChanged: (value) {
+                  setState(() {
+                    selectedCity = value;
+                    profileProvider.updateProfile(newCity: value);
+                  });
+                },
+                items: selectedCountry != null
+                    ? cities[selectedCountry]!.map((city) {
+                  return DropdownMenuItem(
+                    value: city,
+                    child: Text(city),
+                  );
+                }).toList()
+                    : [],
+              ),
 
-          SizedBox(height: 30),
+              Spacer(),
 
-            Spacer(),
-            // Skip and Next Buttons
-            Expanded(
-              child: Row(
+              // Skip and Next Buttons
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black26, width: 2), // Black border
-                        borderRadius: BorderRadius.circular(8), // Same border radius as the button
+                        border: Border.all(color: Colors.black26, width: 2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: TextButton(
                         onPressed: () {
@@ -143,14 +151,18 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 20,),
+                  SizedBox(width: 20),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => SelectDomainScreen()),
-                        );
+                        if (_formKey.currentState!.validate() && selectedGender != null) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => SelectDomainScreen()),
+                          );
+                        } else {
+                          setState(() {}); // To refresh validation messages
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.brown,
@@ -164,8 +176,8 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

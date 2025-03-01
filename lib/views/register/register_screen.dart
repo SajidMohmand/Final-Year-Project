@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp2/views/admin%20screens/admin_login.dart';
 import 'package:fyp2/views/login/login_form_screen.dart';
 import 'package:fyp2/views/login/login_screen.dart';
 import 'register_form_screen.dart';
@@ -32,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        LoginFormScreen(role: _selectedRole),
+                        AdminLogin(role: _selectedRole),
                   ),
                 );
               },

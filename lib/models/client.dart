@@ -12,4 +12,13 @@ class Client {
     required this.image,
     required this.complaintNum,
   });
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'phone': phone,
+      'image': image,
+      'complaintNum': complaintNum,
+    };
+  }
 }

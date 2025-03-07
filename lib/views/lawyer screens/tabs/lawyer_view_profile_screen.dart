@@ -4,6 +4,7 @@ import 'package:fyp2/views/lawyer%20screens/tabs/Edit%20Profile/edit_experience.
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../models/client.dart';
 import '../../../models/lawyer.dart';
 import '../../../models/request.dart';
 import '../../../providers/lawyer_provider.dart';
@@ -422,8 +423,8 @@ class ResolvedCasesScreen extends StatefulWidget {
 }
 
 class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
-  final List<Request> requests = [
-    Request(
+  final List<RequestModel> requests = [
+    RequestModel(
       id: '1',
       status: RequestStatus.Accepted,
       lawyer: Lawyer(
@@ -432,6 +433,14 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
         domain: 'Criminal Law',
         image: '',
         rating: '4.5',
+        complaintNum: 0
+      ),
+      client: Client( // Ensure a client object is added
+        id: '1',
+        name: 'Jane Smith',
+        phone: '1234567890',
+        image: '',
+        complaintNum: 0,
       ),
       formDetails: {
         'name': 'Jane Smith',

@@ -1,9 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fyp2/views/lawyer%20screens/tabs/request/request_detail_screen.dart';
-import '../../../models/lawyer/lawyer_request.dart';
 import 'package:provider/provider.dart';
-import '../../../providers/lawyer/lawyer_request_provider.dart';
+
+import '../../../models/request.dart';
+import '../../../providers/request_provider.dart';
 
 class LawyerRequestScreen extends StatefulWidget {
   @override
@@ -11,15 +12,15 @@ class LawyerRequestScreen extends StatefulWidget {
 }
 
 class _LawyerRequestScreenState extends State<LawyerRequestScreen> {
-  Color _getStatusColor(LawyerRequestStatus status) {
+  Color _getStatusColor(RequestStatus status) {
     switch (status) {
-      case LawyerRequestStatus.Accepted:
+      case RequestStatus.Accepted:
         return Color(0xff72F7EA);
-      case LawyerRequestStatus.Awaiting:
+      case RequestStatus.Awaiting:
         return Color(0xffFFE08E);
-      case LawyerRequestStatus.Declined:
+      case RequestStatus.Declined:
         return Color(0xffDE3730);
-      case LawyerRequestStatus.Timeout:
+      case RequestStatus.Timeout:
         return Colors.grey;
       default:
         return Colors.black;
@@ -28,7 +29,7 @@ class _LawyerRequestScreenState extends State<LawyerRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final requestProvider = Provider.of<LawyerRequestProvider>(context);
+    final requestProvider = Provider.of<RequestProvider>(context);
     final requests = requestProvider.requests;
 
     return Scaffold(
@@ -55,8 +56,6 @@ class _LawyerRequestScreenState extends State<LawyerRequestScreen> {
                     );
                   },
                   child: Container(
-                    width: 328,
-                    height: 214,
                     child: SingleChildScrollView(
                       child: Card(
                         color: Colors.brown.shade100,

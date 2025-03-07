@@ -71,8 +71,6 @@ class ClientCaseDetailOverviewScreen extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 25),
         child: ElevatedButton(
           onPressed: () {
-            Provider.of<FormProvider>(context, listen: false)
-                .saveFormDetails(name, phone, issue, details);
 
             Provider.of<FormProvider>(context, listen: false)
                 .saveFormDetails(name, phone, issue, details);

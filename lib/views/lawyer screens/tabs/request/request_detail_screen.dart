@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fyp2/providers/lawyer/lawyer_request_provider.dart';
 import 'package:provider/provider.dart';
-import '../../../../models/lawyer/lawyer_request.dart';
+import '../../../../models/request.dart';
+import '../../../../providers/request_provider.dart';
 
 class RequestDetailScreen extends StatelessWidget {
-  final LawyerRequest request;
+  final RequestModel request;
 
   RequestDetailScreen({required this.request});
 
@@ -114,7 +114,7 @@ class RequestDetailScreen extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Provider.of<LawyerRequestProvider>(context, listen: false).updateRequestStatus(request.id, LawyerRequestStatus.Accepted);
+                          Provider.of<RequestProvider>(context, listen: false).updateRequestStatus(request.id, RequestStatus.Accepted);
 
                           showDialog(
                             context: context,
@@ -189,7 +189,7 @@ class RequestDetailScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             // Accepted, Awaiting, Declined, Timeout
-            Provider.of<LawyerRequestProvider>(context, listen: false).updateRequestStatus(request.id, "Accepted" as LawyerRequestStatus);
+            Provider.of<RequestProvider>(context, listen: false).updateRequestStatus(request.id, "Accepted" as RequestStatus);
 
             showDialog(
               context: context,
@@ -245,15 +245,15 @@ class RequestDetailScreen extends StatelessWidget {
   }
 
 
-  Color _getStatusColor(LawyerRequestStatus status) {
+  Color _getStatusColor(RequestStatus status) {
     switch (status) {
-      case LawyerRequestStatus.Accepted:
+      case RequestStatus.Accepted:
         return Color(0xff72F7EA);
-      case LawyerRequestStatus.Awaiting:
+      case RequestStatus.Awaiting:
         return Color(0xffFFE08E);
-      case LawyerRequestStatus.Declined:
+      case RequestStatus.Declined:
         return Color(0xffDE3730);
-      case LawyerRequestStatus.Timeout:
+      case RequestStatus.Timeout:
         return Colors.grey;
       default:
         return Colors.black;

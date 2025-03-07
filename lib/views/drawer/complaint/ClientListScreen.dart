@@ -13,7 +13,7 @@ class ClientListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select Clients"),
+        title: Text("Select Users"),
       ),
       body: Column(
         children: [
@@ -23,7 +23,7 @@ class ClientListScreen extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Your Valued Clients",
+                "Your Valued Party",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),

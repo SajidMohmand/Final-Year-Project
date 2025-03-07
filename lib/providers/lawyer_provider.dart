@@ -9,6 +9,7 @@ class LawyerProvider with ChangeNotifier {
       domain: "Cyber Harassment",
       image: "assets/images/lawyer1.png",
       rating: "4.5",
+      complaintNum: 0,
     ),
     Lawyer(
       id: "2",
@@ -16,6 +17,7 @@ class LawyerProvider with ChangeNotifier {
       domain: "Cyber Harassment",
       image: "assets/images/lawyer2.png",
       rating: "4.7",
+      complaintNum: 0,
     ),
     Lawyer(
       id: "3",
@@ -23,6 +25,7 @@ class LawyerProvider with ChangeNotifier {
       domain: "Family Law",
       image: "assets/images/lawyer3.png",
       rating: "4.6",
+      complaintNum: 0,
     ),
     Lawyer(
       id: "4",
@@ -30,6 +33,7 @@ class LawyerProvider with ChangeNotifier {
       domain: "Family Law",
       image: "assets/images/lawyer4.png",
       rating: "4.0",
+      complaintNum: 0,
     ),
     Lawyer(
       id: "5",
@@ -37,6 +41,7 @@ class LawyerProvider with ChangeNotifier {
       domain: "Business Law",
       image: "assets/images/lawyer1.png",
       rating: "4.2",
+      complaintNum: 0,
     ),
   ];
 
@@ -64,6 +69,7 @@ class LawyerProvider with ChangeNotifier {
         domain: "Not Available",
         image: "assets/images/lawyer1.png",
         rating: "0.0",
+        complaintNum: 0,
       ),
     );
   }

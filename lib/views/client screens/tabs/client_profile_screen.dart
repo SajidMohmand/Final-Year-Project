@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../models/client.dart';
 import '../../../models/lawyer.dart';
 import '../../../models/request.dart';
 import '../../../providers/lawyer_provider.dart';
@@ -248,14 +249,15 @@ class LawyerSelectionScreen extends StatelessWidget {
   }
 }
 
+
 class ResolvedCasesScreen extends StatefulWidget {
   @override
   _ResolvedCasesScreenState createState() => _ResolvedCasesScreenState();
 }
 
 class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
-  final List<Request> requests = [
-    Request(
+  final List<RequestModel> requests = [
+    RequestModel(
       id: '1',
       status: RequestStatus.Accepted,
       lawyer: Lawyer(
@@ -264,6 +266,14 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
         domain: 'Criminal Law',
         image: '',
         rating: '4.5',
+        complaintNum: 0
+      ),
+      client: Client( // Ensure a client object is added
+        id: '1',
+        name: 'Jane Smith',
+        phone: '1234567890',
+        image: '',
+        complaintNum: 0,
       ),
       formDetails: {
         'name': 'Jane Smith',
@@ -288,8 +298,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
           return Padding(
             padding: EdgeInsets.all(15),
             child: Container(
-              padding:
-                  EdgeInsets.only(left: 35, top: 35, right: 35, bottom: 15),
+              padding: EdgeInsets.only(left: 35, top: 35, right: 35, bottom: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.brown.shade50,
@@ -298,37 +307,21 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(
-                        left: 20,
-                        top: 5,
-                        bottom: 5),
+                    padding: EdgeInsets.only(left: 20, top: 5, bottom: 5),
                     decoration: BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
-                          color:
-                              Colors.brown,
-                          width: 2.0,
-                        ),
-                      ),
+                      border: Border(left: BorderSide(color: Colors.brown, width: 2.0)),
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment
-                          .start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Domain: ${request.lawyer.domain}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                         ),
                         SizedBox(height: 5),
                         Text(
                           'Lawyer: ${request.lawyer.name}',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -340,42 +333,34 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                   ),
                   SizedBox(height: 5),
                   Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Divider(
-                        thickness: 1,
-                      )),
+                    padding: EdgeInsets.only(left: 20),
+                    child: Divider(thickness: 1),
+                  ),
                   SizedBox(height: 5),
                   Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Review",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w400)),
+                        Text("Review", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              expandedReviews[request.id] =
-                                  !(expandedReviews[request.id] ?? false);
+                              expandedReviews[request.id] = !(expandedReviews[request.id] ?? false);
                             });
                           },
                           child: Icon(
-                            expandedReviews[request.id] == true
-                                ? Icons.expand_more
-                                : Icons.chevron_right,
+                            expandedReviews[request.id] == true ? Icons.expand_more : Icons.chevron_right,
                           ),
                         ),
                       ],
                     ),
                   ),
-
                   if (expandedReviews[request.id] == true) ...[
                     Padding(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Divider(
-                          thickness: 1,
-                        )),
+                      padding: EdgeInsets.only(left: 20),
+                      child: Divider(thickness: 1),
+                    ),
                     SizedBox(height: 10),
                     Container(
                       padding: EdgeInsets.only(left: 20),
@@ -385,19 +370,18 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                             children: [
                               ...List.generate(5, (index) {
                                 return Icon(
-                                  index < double.parse(request.lawyer.rating)
-                                      ? Icons.star
-                                      : Icons
-                                          .star_border,
-                                  color: Colors.yellow.shade700, size: 12,
+                                  index < double.parse(request.lawyer.rating) ? Icons.star : Icons.star_border,
+                                  color: Colors.yellow.shade700,
+                                  size: 12,
                                 );
                               }),
                             ],
                           ),
                           SizedBox(height: 5),
                           Text(
-                              'Excellent service! Highly recommended for criminal cases.',
-                              style: TextStyle(fontSize: 14)),
+                            'Excellent service! Highly recommended for criminal cases.',
+                            style: TextStyle(fontSize: 14),
+                          ),
                         ],
                       ),
                     ),

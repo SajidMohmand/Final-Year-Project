@@ -88,6 +88,7 @@ class ComplaintDetailOverviewScreen extends StatelessWidget {
                 domain: "Cyber law",
                 image: "assets/images/lawyer.png",
                 rating: "4.1",
+                complaintNum: 0
               ),
               respondentDetails: client!,
               complaintDetails: {

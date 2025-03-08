@@ -30,7 +30,7 @@ class _SelectDomainScreenState extends State<SelectDomainScreen> {
   @override
   Widget build(BuildContext context) {
     final profileProvider = Provider.of<ProfileProvider>(context);
-    List<String> selectedDomains = profileProvider.selectedDomains;
+    List<String> selectedDomains = profileProvider.profile.selectedDomains;
 
     return Scaffold(
       appBar: AppBar(title: Text("Select Domain")),

@@ -19,7 +19,7 @@ class _EditExperienceState extends State<EditExperience> {
     setState(() {
       isEditing[index] = !(isEditing[index] ?? false);
       if (isEditing[index]!) {
-        var experience = provider.experiences[index];
+        var experience = provider.profile.experiences[index];
         titleController.text = experience["title"] ?? "";
         companyController.text = experience["company"] ?? "";
         locationController.text = experience["location"] ?? "";
@@ -44,7 +44,7 @@ class _EditExperienceState extends State<EditExperience> {
       return; // Stop saving if validation fails
     }
 
-    provider.experiences[index] = {
+    provider.profile.experiences[index] = {
       "title": titleController.text,
       "company": companyController.text,
       "location": locationController.text,
@@ -65,7 +65,7 @@ class _EditExperienceState extends State<EditExperience> {
       "endDate": "",
     });
     setState(() {
-      isEditing[provider.experiences.length - 1] = true;
+      isEditing[provider.profile.experiences.length - 1] = true;
     });
   }
 
@@ -81,7 +81,7 @@ class _EditExperienceState extends State<EditExperience> {
               children: [
                 Expanded(
                   child: ListView.builder(
-                    itemCount: provider.experiences.length,
+                    itemCount: provider.profile.experiences.length,
                     itemBuilder: (context, index) {
                       return Card(
                         color: Colors.brown.shade100,
@@ -122,14 +122,14 @@ class _EditExperienceState extends State<EditExperience> {
                           )
                               : ListTile(
                             title: Text(
-                              "${provider.experiences[index]["title"]} at ${provider.experiences[index]["company"]}",
+                              "${provider.profile.experiences[index]["title"]} at ${provider.profile.experiences[index]["company"]}",
                               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Location: ${provider.experiences[index]["location"]}"),
-                                Text("From: ${provider.experiences[index]["startDate"]} to ${provider.experiences[index]["endDate"]}"),
+                                Text("Location: ${provider.profile.experiences[index]["location"]}"),
+                                Text("From: ${provider.profile.experiences[index]["startDate"]} to ${provider.profile.experiences[index]["endDate"]}"),
                               ],
                             ),
                             trailing: IconButton(
@@ -172,7 +172,7 @@ class _EditExperienceState extends State<EditExperience> {
     );
   }
   void deleteExperience(int index, ProfileProvider provider) {
-    provider.experiences.removeAt(index);
+    provider.profile.experiences.removeAt(index);
     provider.notifyListeners();
   }
 

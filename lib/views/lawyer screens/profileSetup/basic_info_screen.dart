@@ -52,7 +52,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                     onChanged: (value) {
                       setState(() {
                         selectedGender = value;
-                        profileProvider.updateProfile(newGender: value);
+                        profileProvider.updateProfile(gender: value);
                       });
                     },
                   ),
@@ -65,7 +65,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                     onChanged: (value) {
                       setState(() {
                         selectedGender = value;
-                        profileProvider.updateProfile(newGender: value);
+                        profileProvider.updateProfile(gender: value);
                       });
                     },
                   ),
@@ -93,7 +93,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                   setState(() {
                     selectedCountry = value;
                     selectedCity = null;
-                    profileProvider.updateProfile(newCountry: value);
+                    profileProvider.updateProfile(country: value);
                   });
                 },
                 items: countries.map((country) {
@@ -115,7 +115,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                 onChanged: (value) {
                   setState(() {
                     selectedCity = value;
-                    profileProvider.updateProfile(newCity: value);
+                    profileProvider.updateProfile(city: value);
                   });
                 },
                 items: selectedCountry != null

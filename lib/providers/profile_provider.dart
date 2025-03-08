@@ -1,94 +1,72 @@
 import 'package:flutter/material.dart';
+import '../models/profile.dart';
 
 class ProfileProvider with ChangeNotifier {
-  // Bio Controller
-  late TextEditingController bioController = TextEditingController();
+  // Profile Data
+  Profile profile = Profile(id: '1');
 
-  void updateController(bio){
-    bioController = bio;
+  // Controllers
+  TextEditingController bioController = TextEditingController();
+  TextEditingController availabilityController = TextEditingController();
+
+  // Update Bio
+  void updateBio(String bio) {
+    profile.bio = bio;
+    notifyListeners();
   }
 
-  // Education Fields
-  String? selectedMasterField;
-  String? selectedMasterUniversity;
-  String? selectedMasterYear;
-  String? selectedBachelorField;
-  String? selectedBachelorUniversity;
-  String? selectedBachelorYear;
+  // Update Profile Data
+  void updateProfile({String? gender, String? country, String? city, String? availability}) {
+    profile.gender = gender ?? profile.gender;
+    profile.country = country ?? profile.country;
+    profile.city = city ?? profile.city;
+    profile.selectedAvailability = availability ?? profile.selectedAvailability;
+    notifyListeners();
+  }
 
+  // Manage Education
+  void addEducation(String level, String field, String university, String year) {
+    profile.education.add({
+      'level': level, // "Bachelor" or "Master"
+      'field': field,
+      'university': university,
+      'year': year,
+    });
+    notifyListeners();
+  }
 
+  void clearEducation() {
+    profile.education.clear();
+    notifyListeners();
+  }
 
-  List<Map<String, String>> _experiences = [];
-
-  List<Map<String, String>> get experiences => _experiences;
-
+  // Manage Experiences
   void addExperience(Map<String, String> experience) {
-    _experiences.add(experience);
+    profile.experiences.add(experience);
     notifyListeners();
   }
 
   void setExperiences(List<Map<String, String>> experiences) {
-    _experiences = experiences;
+    profile.experiences = experiences;
     notifyListeners();
   }
 
   void clearExperiences() {
-    _experiences.clear();
+    profile.experiences.clear();
     notifyListeners();
   }
 
-  String? gender;
-  String? country;
-  String? city;
-
-  void updateProfile({String? newGender, String? newCountry, String? newCity}) {
-    gender = newGender ?? gender;
-    country = newCountry ?? country;
-    city = newCity ?? city;
-    notifyListeners();
-  }
-
-  String? selectedAvailability;
-  TextEditingController availabilityController = TextEditingController();
-
-  // Selected Domains
-  List<String> selectedDomains = [];
+  // Manage Domains
   void updateDomains(List<String> domains) {
-    selectedDomains = domains;
+    profile.selectedDomains = domains;
     notifyListeners();
   }
-  // Methods to Update Profile Data
-  void updateMasterEducation(String field, String university, String year) {
-    selectedMasterField = field;
-    selectedMasterUniversity = university;
-    selectedMasterYear = year;
-    notifyListeners();
-  }
-
-  void updateBachelorEducation(String field, String university, String year) {
-    selectedBachelorField = field;
-    selectedBachelorUniversity = university;
-    selectedBachelorYear = year;
-    notifyListeners();
-  }
-
-  void updatePersonalDetails({
-    String? availability,
-  }) {
-    selectedAvailability = availability;
-    notifyListeners();
-  }
-
-
-
-
 
   // Dispose controllers to prevent memory leaks
   @override
   void dispose() {
     bioController.dispose();
     availabilityController.dispose();
-
     super.dispose();
   }
 }

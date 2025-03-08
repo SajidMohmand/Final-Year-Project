@@ -12,7 +12,7 @@ import '../../../providers/lawyer_provider.dart';
 class LawyerViewProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var profileDetails = Provider.of<ProfileProvider>(context,listen: false);
+    var profileDetails = Provider.of<ProfileProvider>(context,listen: false).profile;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(154),
@@ -94,7 +94,7 @@ class LawyerViewProfileScreen extends StatelessWidget {
                 )
               ],
             ),
-            Center(child: Text(profileDetails.bioController.text,style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),)),
+            Center(child: Text(profileDetails.bio.toString(),style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),)),
             Center(child: Text("Available in ${profileDetails.country}",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),)),
 
             SingleChildScrollView(
@@ -323,9 +323,9 @@ class ExperienceAndEducation extends StatelessWidget {
                 ],
               ),
           
-              if (profileDetails.experiences.isNotEmpty)
+              if (profileDetails.profile.experiences.isNotEmpty)
                 Column(
-                  children: profileDetails.experiences.map((exp) {
+                  children: profileDetails.profile.experiences.map((exp) {
                     return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(2),
@@ -380,12 +380,12 @@ class ExperienceAndEducation extends StatelessWidget {
                 ),
           
                 title: Text(
-                  "Masters in ${profileDetails.selectedMasterField.toString()}",
+                  "Masters in ${profileDetails.profile.education[0]["field"].toString()}",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                 ),
-                subtitle: Text("University of ${profileDetails.selectedMasterUniversity.toString()}"),
+                subtitle: Text("University of ${profileDetails.profile.education[0]["university"].toString()}"),
                 trailing: Text(
-                  "${profileDetails.selectedMasterYear.toString()}",
+                  "${profileDetails.profile.education[0]["year"].toString()}",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -398,12 +398,12 @@ class ExperienceAndEducation extends StatelessWidget {
                 ),
           
                 title: Text(
-                  "Bachelors in ${profileDetails.selectedBachelorField.toString()}",
+                  "Bachelors in ${profileDetails.profile.education[1]["field"].toString()}",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                 ),
-                subtitle: Text("University of ${profileDetails.selectedBachelorUniversity.toString()}"),
+                subtitle: Text("University of ${profileDetails.profile.education[1]["university"].toString()}"),
                 trailing: Text(
-                  "${profileDetails.selectedBachelorYear.toString()}",
+                  profileDetails.profile.education[1]["year"].toString(),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),

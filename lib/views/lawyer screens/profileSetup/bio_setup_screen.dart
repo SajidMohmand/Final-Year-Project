@@ -28,12 +28,12 @@ class _BioSetupScreenState extends State<BioSetupScreen> {
   void saveData() {
     var profileProvider = Provider.of<ProfileProvider>(context, listen: false);
 
-    profileProvider.updateController(bioController);
+    profileProvider.updateBio(bioController.text.toString());
 
     if (selectedMasterField != null &&
         selectedMasterUniversity != null &&
         selectedMasterYear != null) {
-      profileProvider.updateMasterEducation(
+      profileProvider.addEducation("Master",
         selectedMasterField!, selectedMasterUniversity!, selectedMasterYear!,
       );
     }
@@ -41,7 +41,7 @@ class _BioSetupScreenState extends State<BioSetupScreen> {
     if (selectedBachelorField != null &&
         selectedBachelorUniversity != null &&
         selectedBachelorYear != null) {
-      profileProvider.updateBachelorEducation(
+      profileProvider.addEducation("Bachelor",
         selectedBachelorField!, selectedBachelorUniversity!, selectedBachelorYear!,
       );
     }

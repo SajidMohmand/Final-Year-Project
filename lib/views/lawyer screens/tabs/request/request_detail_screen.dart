@@ -95,7 +95,8 @@ class RequestDetailScreen extends StatelessWidget {
                 Spacer(),
             
                 // Accept & Decline Buttons
-                Row(
+                if (request.status == RequestStatus.Awaiting)
+                  Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
@@ -120,10 +121,8 @@ class RequestDetailScreen extends StatelessWidget {
                             context: context,
                             builder: (BuildContext dialogContext) {
                               Future.delayed(Duration(seconds: 2), () {
-                                if (dialogContext.mounted) {
                                   Navigator.of(dialogContext).pop();
-                                }
-
+                                  Navigator.of(context).pop();
                               });
                               return AlertDialog(
                                 shape: RoundedRectangleBorder(
@@ -170,6 +169,59 @@ class RequestDetailScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                if(request.status == RequestStatus.Accepted)
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Provider.of<RequestProvider>(context, listen: false).updateRequestStatus(request.id, RequestStatus.Resolve);
+
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext dialogContext) {
+                            Future.delayed(Duration(seconds: 2), () {
+                                Navigator.of(dialogContext).pop();
+                                Navigator.of(context).pop();
+
+                            });
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              content: Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                decoration: BoxDecoration(
+                                  color: Colors.brown[100],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: EdgeInsets.all(20),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.check_circle, color: Colors.brown, size: 50),
+                                    SizedBox(height: 15),
+                                    Text(
+                                      "Request Resolved notification sent to the Client",
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 10),
+                                  ],
+                                ),
+                              ),
+                              backgroundColor: Colors.transparent,
+                            );
+                          },
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.brown,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // Decreased border radius
+                        ),
+                      ),child: Text("Resolved",style: TextStyle(color: Colors.white),),
+                    ),
+                  ),
               ],
             ),
           ),

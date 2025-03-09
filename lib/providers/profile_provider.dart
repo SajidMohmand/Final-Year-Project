@@ -26,12 +26,25 @@ class ProfileProvider with ChangeNotifier {
 
   // Manage Education
   void addEducation(String level, String field, String university, String year) {
-    profile.education.add({
-      'level': level, // "Bachelor" or "Master"
-      'field': field,
-      'university': university,
-      'year': year,
-    });
+    int index = profile.education.indexWhere((edu) => edu['level'] == level);
+
+    if (index != -1) {
+      // Update existing entry
+      profile.education[index] = {
+        'level': level,
+        'field': field,
+        'university': university,
+        'year': year,
+      };
+    } else {
+      // Add new entry if not found
+      profile.education.add({
+        'level': level,
+        'field': field,
+        'university': university,
+        'year': year,
+      });
+    }
     notifyListeners();
   }
 

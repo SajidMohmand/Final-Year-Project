@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fyp2/providers/profile_provider.dart';
 import 'package:fyp2/views/lawyer%20screens/tabs/Edit%20Profile/edit_experience.dart';
+import 'package:fyp2/views/lawyer%20screens/tabs/Edit%20Profile/edit_qualification.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -30,14 +31,7 @@ class LawyerViewProfileScreen extends StatelessWidget {
                     automaticallyImplyLeading: false,
                     backgroundColor: Color(0xff6D4905),
                     elevation: 0, // Removes shadow
-                    actions: [
-                      IconButton(
-                        icon:
-                            Icon(Icons.settings, size: 24, color: Colors.white),
-                        onPressed: () {
-                        },
-                      ),
-                    ],
+
                     centerTitle: true,
                   ),
                 ),
@@ -77,7 +71,7 @@ class LawyerViewProfileScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 40),
                   child: Text(
-                    "John Doe",
+                    "John smith",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -94,7 +88,7 @@ class LawyerViewProfileScreen extends StatelessWidget {
                 )
               ],
             ),
-            Center(child: Text(profileDetails.bio.toString(),style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),)),
+            Center(child: Text(profileDetails.bio.toString(),style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),textAlign: TextAlign.center,)),
             Center(child: Text("Available in ${profileDetails.country}",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),)),
 
             SingleChildScrollView(
@@ -255,16 +249,34 @@ class LawyerViewProfileScreen extends StatelessWidget {
 }
 
 
-class ExperienceAndEducation extends StatelessWidget {
+class ExperienceAndEducation extends StatefulWidget {
+  @override
+  State<ExperienceAndEducation> createState() => _ExperienceAndEducationState();
+}
+
+class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
   final String bio = "John Doe, a lawyer specializing in criminal law.";
+
   final List<String> experience = [
     "Senior Associate at XYZ Law Firm (2015-2020)",
     "Legal Advisor at ABC Corporation (2020-Present)",
   ];
+
   final List<String> qualifications = [
     "LLB from Harvard University (2015)",
     "Juris Doctor (JD) from Yale University (2018)",
   ];
+  bool needsUpdate = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (needsUpdate) {
+      setState(() {
+        needsUpdate = false; // Reset after updating UI
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +299,7 @@ class ExperienceAndEducation extends StatelessWidget {
                 controller: profileDetails.bioController,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  hintText: "Enter your bio...",
+                  hintText: "Update your bio...",
                   hintStyle: TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.brown.shade100,
@@ -303,7 +315,7 @@ class ExperienceAndEducation extends StatelessWidget {
 
 
               SizedBox(height: 20),
-          
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -312,17 +324,24 @@ class ExperienceAndEducation extends StatelessWidget {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   IconButton(
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => EditExperience()),
                       );
+
+                      if (result == true) {
+                        setState(() {
+                          needsUpdate = true; // Set flag to update UI
+                        });
+                      }
                     },
-                    icon: Icon(Icons.edit, color: Colors.brown),
+
+                      icon: Icon(Icons.edit, color: Colors.brown),
                   ),
                 ],
               ),
-          
+
               if (profileDetails.profile.experiences.isNotEmpty)
                 Column(
                   children: profileDetails.profile.experiences.map((exp) {
@@ -353,14 +372,14 @@ class ExperienceAndEducation extends StatelessWidget {
                     );
                   }).toList(),
                 )
-          
+
               else
                 Text(
                   "No experience added yet.",
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
               SizedBox(height: 40),
-          
+
               // Qualifications Section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -369,7 +388,15 @@ class ExperienceAndEducation extends StatelessWidget {
                     "Qualifications",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Icon(Icons.edit, color: Colors.brown)
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => EditQualification()),
+                        );
+                      },
+
+                      child: Icon(Icons.edit, color: Colors.brown))
                 ],
               ),
               SizedBox(height: 10),
@@ -378,7 +405,7 @@ class ExperienceAndEducation extends StatelessWidget {
                   backgroundImage: AssetImage('assets/images/uni.png'), // Replace with your image path
                   backgroundColor: Colors.transparent, // Optional: set the background color if you want
                 ),
-          
+
                 title: Text(
                   "Masters in ${profileDetails.profile.education[0]["field"].toString()}",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
@@ -389,14 +416,14 @@ class ExperienceAndEducation extends StatelessWidget {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),
-          
-          
+
+
               ListTile(
                 leading: CircleAvatar(
                   backgroundImage: AssetImage('assets/images/uni.png'), // Replace with your image path
                   backgroundColor: Colors.transparent, // Optional: set the background color if you want
                 ),
-          
+
                 title: Text(
                   "Bachelors in ${profileDetails.profile.education[1]["field"].toString()}",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
@@ -429,7 +456,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
       status: RequestStatus.Accepted,
       lawyer: Lawyer(
         id: '1',
-        name: 'John Doe',phone: "03001111211",
+        name: 'John Smith',phone: "03001111211",
         domain: 'Criminal Law',
         image: '',
         rating: '4.5',
@@ -499,14 +526,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                             fontSize: 16,
                           ),
                         ),
-                        SizedBox(height: 5),
-                        Text(
-                          'Lawyer: ${request.lawyer.name}',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+
                       ],
                     ),
                   ),

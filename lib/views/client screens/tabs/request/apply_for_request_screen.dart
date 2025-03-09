@@ -51,7 +51,7 @@ class _ClientApplyForRequestScreenState extends State<ClientApplyForRequestScree
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Case Details (optional)",
+                  "Case Details",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 10),
@@ -101,7 +101,7 @@ class _ClientApplyForRequestScreenState extends State<ClientApplyForRequestScree
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Attach File (Optional)",
+                      "Attach File",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),

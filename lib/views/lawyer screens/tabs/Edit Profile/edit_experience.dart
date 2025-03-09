@@ -69,12 +69,15 @@ class _EditExperienceState extends State<EditExperience> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ProfileProvider>(
       builder: (context, provider, child) {
         return Scaffold(
-          appBar: AppBar(title: Text("Edit Experience")),
+          appBar: AppBar(
+
+              title: Text("Edit Experience")),
           body: Padding(
             padding: EdgeInsets.all(10),
             child: Column(

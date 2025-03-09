@@ -22,6 +22,8 @@ class _LawyerRequestScreenState extends State<LawyerRequestScreen> {
         return Color(0xffDE3730);
       case RequestStatus.Timeout:
         return Colors.grey;
+      case RequestStatus.Resolve:
+        return Colors.brown.shade300;
       default:
         return Colors.black;
     }

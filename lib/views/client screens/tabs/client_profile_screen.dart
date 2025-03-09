@@ -6,6 +6,7 @@ import '../../../models/client.dart';
 import '../../../models/lawyer.dart';
 import '../../../models/request.dart';
 import '../../../providers/lawyer_provider.dart';
+import '../../lawyer screens/profile_view_screen.dart';
 
 class ClientProfileScreen extends StatelessWidget {
   @override
@@ -189,10 +190,21 @@ class LawyerSelectionScreen extends StatelessWidget {
                             EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                         child: ListTile(
                           contentPadding: EdgeInsets.zero,
-                          leading: CircleAvatar(
-                            radius: 22,
-                            backgroundImage: AssetImage(
-                              lawyer.image,
+                          leading: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfileViewScreen(),
+                                ),
+                              );
+                            },
+
+                            child: CircleAvatar(
+                              radius: 22,
+                              backgroundImage: AssetImage(
+                                lawyer.image,
+                              ),
                             ),
                           ),
                           title: Text(

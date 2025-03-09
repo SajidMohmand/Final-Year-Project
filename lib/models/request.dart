@@ -1,7 +1,7 @@
 import 'package:fyp2/models/client.dart';
 import 'package:fyp2/models/lawyer.dart';
 
-enum RequestStatus { Accepted, Awaiting, Declined, Timeout }
+enum RequestStatus { Accepted, Awaiting, Declined, Timeout, Resolve }
 
 class RequestModel {
   final String id;

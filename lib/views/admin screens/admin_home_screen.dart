@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/complaint_provider.dart';
 import '../../models/complaint.dart';
 import '../../widgets/app_drawer.dart';
-import '../../models/complaint.dart';
+import '../login/login_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -20,7 +20,76 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     final complaints = complaintProvider.complaints;
 
     return Scaffold(
-      drawer: AppDrawer(),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none, // Allow avatar to overflow the container
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.27, // Increased height
+                  decoration: BoxDecoration(
+                    color: Colors.brown, // Background color
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 155, // Keep same position
+                  left: 110,
+                  child: Container(
+                    width: 83,
+                    height: 83,
+                    child: CircleAvatar(
+                      radius: 40, // Adjust size
+                      backgroundColor: Colors.white,
+                      child: CircleAvatar(
+                        radius: 38, // Slightly smaller for a border effect
+                        backgroundImage: AssetImage("assets/images/splash.png"),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 240, // Keep same position
+                  left: 60,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Legal Right Awareness",
+                        style: TextStyle(
+                          fontFamily: 'Open Sans',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 80), // Increased space below to avoid overlap
+
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text("Logout"),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Padding(
+                          padding: EdgeInsets.all(10),
+                          child: LoginScreen())),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(title: const Text("Admin Dashboard")),
       body: complaints.isEmpty
           ? const Center(
@@ -208,28 +277,7 @@ class ComplaintDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Complaint Details"),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: TextButton(
-              onPressed: () {
-                complaint.updateStatus(ComplaintStatus.Resolved);
-                showComplaintDialog(context,"Block user successfully");
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.red, // Button background color
-                foregroundColor: Colors.white, // Text color
 
-                textStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              child: Text("Block User"),
-            ),
-          )
-
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -237,22 +285,13 @@ class ComplaintDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Complaint ID
-              Text(
-                "Complaint ID: ${complaint.id}",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-              ),
 
-              Center(child: Text("Complaint Number : 1",
-              style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),)),
+              Text("Complaint Number:${complaint.complaintNum.toString()}",
+              style: TextStyle(fontSize: 13),),
               const SizedBox(height: 12),
 
 
-              Center(child: Text("${complaint.status.toString()}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: Colors.green),),),
+              Center(child: Text(complaint.status.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: Colors.green),),),
 
 
 
@@ -291,45 +330,66 @@ class ComplaintDetailScreen extends StatelessWidget {
               if (complaint.complaintDetails.containsKey('file'))
                 _buildAttachmentCard(complaint.complaintDetails['file']!),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                          complaint.updateStatus(ComplaintStatus.Resolved);
-                          showComplaintDialog(context,"Complaint Request Decline successfully");
 
-                        },
-                        child: Text("Decline", style: TextStyle(fontSize: 18, color: Colors.brown)),
+              if (complaint.status == ComplaintStatus.Waiting) ...[
+                if (complaint.complaintNum == 0)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: TextButton(
+                            onPressed: () {
+                              complaint.updateStatus(ComplaintStatus.Resolved);
+                              showComplaintDialog(context, "Complaint Request Declined successfully");
+                            },
+                            child: Text("Decline", style: TextStyle(fontSize: 18, color: Colors.brown)),
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            complaint.updateStatus(ComplaintStatus.Resolved);
+                            showComplaintDialog(context, "Warning sent successfully");
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.brown,
+                            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text("Send Warning", style: TextStyle(fontSize: 18, color: Colors.white)),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 20),
-                  Expanded(
+
+                if (complaint.complaintNum == 1)
+                  Container(
+                    width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
                         complaint.updateStatus(ComplaintStatus.Resolved);
-                        showComplaintDialog(context,"Warning send successfully");
-
+                        showComplaintDialog(context, "User Blocked successfully");
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.brown,
+                        backgroundColor: Colors.redAccent,
                         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text("Send Warning", style: TextStyle(fontSize: 18, color: Colors.white)),
+                      child: Text("Block User", style: TextStyle(fontSize: 18, color: Colors.white)),
                     ),
                   ),
-                ],
-              ),
+              ],
               SizedBox(height: 40,)
             ],
           ),

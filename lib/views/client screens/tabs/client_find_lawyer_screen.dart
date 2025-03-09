@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp2/views/lawyer%20screens/profile_view_screen.dart';
 
 void main() {
   runApp(MaterialApp(home: ClientFindLawyerScreen()));
@@ -165,8 +166,19 @@ class LawyerListScreen extends StatelessWidget {
           final lawyer = lawyers[index];
           return Card(
             child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage(lawyer["image"]!),
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfileViewScreen(),
+                    ),
+                  );
+                },
+
+                child: CircleAvatar(
+                  backgroundImage: AssetImage(lawyer["image"]!),
+                ),
               ),
               title: Text(
                 lawyer["name"]!,
@@ -259,8 +271,19 @@ class _SearchLawyerScreenState extends State<SearchLawyerScreen> {
                 final lawyer = _filteredLawyers[index];
                 return Card(
                   child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: AssetImage(lawyer["image"]!),
+                    leading: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfileViewScreen(), 
+                          ),
+                        );
+                      },
+
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage(lawyer["image"]!),
+                      ),
                     ),
                     title: Text(
                       lawyer["name"]!,

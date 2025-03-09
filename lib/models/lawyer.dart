@@ -1,6 +1,7 @@
 class Lawyer {
   final String id;
   final String name;
+  final String phone;
   final String domain;
   final String image;
   final String rating;
@@ -9,6 +10,7 @@ class Lawyer {
   Lawyer({
     required this.id,
     required this.name,
+    required this.phone,
     required this.domain,
     required this.image,
     required this.rating,
@@ -19,6 +21,7 @@ class Lawyer {
     return {
       'id': id,
       'name': name,
+      'phone':phone,
       'domain': domain,
       'image': image,
       'rating': rating,

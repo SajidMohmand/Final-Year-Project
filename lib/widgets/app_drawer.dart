@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fyp2/views/drawer/dashboard_screen.dart';
 import 'package:fyp2/views/login/login_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -62,26 +61,13 @@ class AppDrawer extends StatelessWidget {
             ],
           ),
           SizedBox(height: 80), // Increased space below to avoid overlap
-          ListTile(
-            leading: Icon(Icons.dashboard),
-            title: Text("Dashboard"),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder:(context)=> DashboardScreen()));
-            },
-          ),
+
           ListTile(
             leading: Icon(Icons.report),
             title: Text("Complaint"),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder:(context)=> ComplaintScreen()));
 
-
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text("Settings"),
-            onTap: () {
 
             },
           ),

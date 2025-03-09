@@ -6,6 +6,7 @@ class LawyerProvider with ChangeNotifier {
     Lawyer(
       id: "1",
       name: "John Doe",
+      phone: "03001111211",
       domain: "Cyber Harassment",
       image: "assets/images/lawyer1.png",
       rating: "4.5",
@@ -14,6 +15,7 @@ class LawyerProvider with ChangeNotifier {
     Lawyer(
       id: "2",
       name: "Jane Smith",
+      phone: "03001111211",
       domain: "Cyber Harassment",
       image: "assets/images/lawyer2.png",
       rating: "4.7",
@@ -22,6 +24,7 @@ class LawyerProvider with ChangeNotifier {
     Lawyer(
       id: "3",
       name: "Michael Johnson",
+      phone: "03001111211",
       domain: "Family Law",
       image: "assets/images/lawyer3.png",
       rating: "4.6",
@@ -30,6 +33,7 @@ class LawyerProvider with ChangeNotifier {
     Lawyer(
       id: "4",
       name: "Capital Johnson",
+      phone: "03001111211",
       domain: "Family Law",
       image: "assets/images/lawyer4.png",
       rating: "4.0",
@@ -38,6 +42,7 @@ class LawyerProvider with ChangeNotifier {
     Lawyer(
       id: "5",
       name: "Alice Brown",
+      phone: "03001111211",
       domain: "Business Law",
       image: "assets/images/lawyer1.png",
       rating: "4.2",
@@ -66,6 +71,7 @@ class LawyerProvider with ChangeNotifier {
       orElse: () => Lawyer(
         id: "",
         name: "Unknown",
+        phone: "no have",
         domain: "Not Available",
         image: "assets/images/lawyer1.png",
         rating: "0.0",

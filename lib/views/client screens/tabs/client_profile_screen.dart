@@ -262,7 +262,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
       status: RequestStatus.Accepted,
       lawyer: Lawyer(
         id: '1',
-        name: 'John Doe',
+        name: 'John Doe',phone: "03001111211",
         domain: 'Criminal Law',
         image: '',
         rating: '4.5',

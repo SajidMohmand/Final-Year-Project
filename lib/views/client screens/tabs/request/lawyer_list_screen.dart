@@ -1,46 +1,61 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../providers/client_provider.dart';
-import '../../../models/client.dart';
-import './complaint_detail_overview_screen.dart';
-import 'lawyer_apply_for_complaint_screen.dart'; // Import client detail screen
 
-class ClientListScreen extends StatelessWidget {
+import '../../../../models/lawyer.dart';
+import '../../../../providers/lawyer_provider.dart';
+import 'apply_for_request_screen.dart';
+
+
+
+class LawyerListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final clientProvider = Provider.of<ClientProvider>(context);
-    final clients = clientProvider.filteredClients;
+    final lawyerProvider = Provider.of<LawyerProvider>(context);
+    final lawyers = lawyerProvider.filteredLawyers;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select Users"),
+        title: Text("Select Lawyers"),
       ),
       body: Column(
         children: [
-
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              onChanged: (query) {
+                lawyerProvider.filterLawyers(query);
+              },
+              decoration: InputDecoration(
+                labelText: "Search Lawyers",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
           Padding(
             padding: EdgeInsets.all(10),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Your Valued Party",
+                "Top Lawyers",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
           Expanded(
-            child: clients.isNotEmpty
+            child: lawyers.isNotEmpty
                 ? ListView.builder(
-              itemCount: clients.length,
+              itemCount: lawyers.length,
               itemBuilder: (context, index) {
-                final client = clients[index];
+                final lawyer = lawyers[index];
                 return Card(
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: AssetImage(client.image),
+                      backgroundImage: AssetImage(lawyer.image),
                     ),
                     title: Text(
-                      client.name,
+                      lawyer.name,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -48,22 +63,27 @@ class ClientListScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          client.phone,
+                          lawyer.domain,
                           style: TextStyle(
                               fontSize: 14, color: Colors.grey[700]),
                         ),
                         Row(
                           children: [
-                            Icon(Icons.description,
-                                color: Colors.blue, size: 18),
+                            Icon(Icons.star,
+                                color: Colors.amber, size: 18),
                             SizedBox(width: 4),
-
+                            Text(
+                              lawyer.rating,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            ),
                           ],
                         ),
                       ],
                     ),
                     onTap: () {
-                      showClientDetail(context, client);
+                      showProfileDetail(context, lawyer);
                     },
                   ),
                 );
@@ -84,12 +104,12 @@ class ClientListScreen extends StatelessWidget {
     );
   }
 
-  void showClientDetail(BuildContext context, Client client) {
+  void showProfileDetail(BuildContext context, Lawyer lawyer) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("User Details"),
+          title: Text("Lawyer Details"),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,20 +117,22 @@ class ClientListScreen extends StatelessWidget {
                 Row(
                   children: [
                     CircleAvatar(
-                        radius: 30, backgroundImage: AssetImage(client.image)),
+                        radius: 30, backgroundImage: AssetImage(lawyer.image)),
                     SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(client.name,
+                        Text(lawyer.name,
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold)),
-                        Text(client.phone, style: TextStyle(fontSize: 16)),
+                        Text(lawyer.domain, style: TextStyle(fontSize: 16)),
                         Row(
                           children: [
-                            Icon(Icons.description, color: Colors.blue, size: 18),
+                            Icon(Icons.star, color: Colors.amber, size: 18),
                             SizedBox(width: 4),
-
+                            Text(lawyer.rating,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ],
@@ -120,18 +142,34 @@ class ClientListScreen extends StatelessWidget {
                 SizedBox(height: 10),
                 Divider(color: Colors.black),
                 SizedBox(height: 10),
-
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Chat"),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("View Complete Profile"),
+                    ),
+                  ],
+                ),
                 SizedBox(height: 10),
                 OutlinedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LawyerApplyForComplaintScreen(client.id),
+                        builder: (context) => ClientApplyForRequestScreen(lawyer.id),
                       ),
                     );
                   },
-                  child: Text("Apply for Complaint"),
+                  child: Text("Apply for Request"),
                 ),
               ],
             ),

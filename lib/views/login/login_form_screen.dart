@@ -215,7 +215,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
               children: [
                 _buildSocialButton("Google", "assets/images/google.png", handleGoogleSignIn),
                 SizedBox(width: 20),
-                _buildSocialButton("Facebook", "assets/images/facebook.png", handleFacebookSignIn),
+                // _buildSocialButton("Facebook", "assets/images/facebook.png", handleFacebookSignIn),
               ],
             ),
 

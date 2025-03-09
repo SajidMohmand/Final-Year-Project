@@ -171,7 +171,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
             MaterialPageRoute(builder: (context) => ClientListScreen()),
           );
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add,color: Colors.white,),
         backgroundColor: Colors.brown,
       ),
     );

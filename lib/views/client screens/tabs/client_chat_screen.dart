@@ -94,7 +94,10 @@ class ClientChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Chat")),
+
+      appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text("Chat")),
       body: ListView.builder(
         itemCount: chatData.length,
         itemBuilder: (context, index) {

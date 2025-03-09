@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fyp2/providers/profile_provider.dart';
 import 'package:fyp2/views/lawyer%20screens/tabs/Edit%20Profile/edit_experience.dart';
@@ -7,12 +9,13 @@ import 'package:image_picker/image_picker.dart';
 import '../../../models/client.dart';
 import '../../../models/lawyer.dart';
 import '../../../models/request.dart';
-import '../../../providers/lawyer_provider.dart';
+import '../client screens/tabs/request/lawyer_list_screen.dart';
 
-class LawyerViewProfileScreen extends StatelessWidget {
+class ProfileViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var profileDetails = Provider.of<ProfileProvider>(context,listen: false).profile;
+    var profileDetails =
+        Provider.of<ProfileProvider>(context, listen: false).profile;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(154),
@@ -32,16 +35,31 @@ class LawyerViewProfileScreen extends StatelessWidget {
                     elevation: 0, // Removes shadow
                     actions: [
                       IconButton(
-                        icon:
-                            Icon(Icons.settings, size: 24, color: Colors.white),
+                        icon: Transform.rotate(
+                          angle: -pi / 4,
+                          child: Icon(
+                            Icons.send,
+                            size: 24,
+                            color: Colors.white,
+                          ),
+                        ),
                         onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Padding(
+                                    padding: EdgeInsets.all(10), child: LawyerListScreen())),
+                          );
                         },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.chat, size: 24, color: Colors.white),
+                        onPressed: () {},
                       ),
                     ],
                     centerTitle: true,
                   ),
                 ),
-
                 Positioned(
                   bottom: -60,
                   left: constraints.maxWidth / 2 - 60,
@@ -54,8 +72,7 @@ class LawyerViewProfileScreen extends StatelessWidget {
                     ),
                     child: CircleAvatar(
                       radius: 60,
-                      backgroundImage: AssetImage(
-                          'assets/images/profile.png'),
+                      backgroundImage: AssetImage('assets/images/profile.png'),
                     ),
                   ),
                 ),
@@ -64,46 +81,41 @@ class LawyerViewProfileScreen extends StatelessWidget {
           },
         ),
       ),
-
       body: Padding(
-        padding: const EdgeInsets.only(
-            top: 55.0),
+        padding: const EdgeInsets.only(top: 55.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 40),
-                  child: Text(
-                    "John Doe",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.edit, color: Color(0xffA3ADAB)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditLawyerViewProfileScreen(),
-                      ),
-                    );
-                  },
-                )
-              ],
+            Center(
+              child: Text(
+                "John Doe",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
             ),
-            Center(child: Text(profileDetails.bio.toString(),style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),)),
-            Center(child: Text("Available in ${profileDetails.country}",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),)),
-
+            Center(
+                child: Text(
+              profileDetails.bio.toString(),
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                  fontFamily: 'OpenSans'),
+            )),
+            Center(
+                child: Text(
+              "Available in ${profileDetails.country}",
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                  fontFamily: 'OpenSans'),
+            )),
             SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(  // Wrap the first container in Expanded
+                    Expanded(
+                      // Wrap the first container in Expanded
                       child: Container(
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -135,7 +147,8 @@ class LawyerViewProfileScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 10),
-                    Expanded(  // Wrap the second container in Expanded
+                    Expanded(
+                      // Wrap the second container in Expanded
                       child: Container(
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -159,12 +172,14 @@ class LawyerViewProfileScreen extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.star,
-                                  color: Colors.yellow,  // Yellow color for the star
-                                  size: 16,  // Size of the star
+                                  color: Colors
+                                      .yellow, // Yellow color for the star
+                                  size: 16, // Size of the star
                                 ),
-                                SizedBox(width: 5),  // Space between star and rating
+                                SizedBox(
+                                    width: 5), // Space between star and rating
                                 Text(
-                                  "4.7",  // Example rating, replace with dynamic value if needed
+                                  "4.7", // Example rating, replace with dynamic value if needed
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -181,11 +196,41 @@ class LawyerViewProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             Divider(thickness: 2),
             SizedBox(
               height: 20,
             ),
+            ListTile(
+              leading: Container(
+                height: 42,
+                width: 42,
+                color: Colors.brown.shade100,
+                child: Image.asset(
+                  'assets/images/lawyer.png',
+                  scale: 1.7,
+                ),
+              ),
+              title: Text("Education and Experience"),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                size: 20,
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ExperienceAndEducation(),
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Divider(
+              thickness: 1,
+            ),
+            SizedBox(height: 5),
             ListTile(
               leading: Container(
                 height: 42,
@@ -211,37 +256,7 @@ class LawyerViewProfileScreen extends StatelessWidget {
                 );
               },
             ),
-            SizedBox(
-              height: 5,
-            ),
-            Divider(
-              thickness: 1,
-            ),
-            SizedBox(height: 5),
-            ListTile(
-              leading: Container(
-                height: 42,
-                width: 42,
-                color: Colors.brown.shade100,
-                child: Image.asset(
-                  'assets/images/lawyer.png',
-                  scale: 1.7,
-                ),
-              ),
-              title: Text("Education and Experience"),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 20,
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExperienceAndEducation(),
-                  ),
-                );
-              },
-            ),
+
             SizedBox(height: 5),
             Divider(
               thickness: 1,
@@ -253,7 +268,6 @@ class LawyerViewProfileScreen extends StatelessWidget {
     );
   }
 }
-
 
 class ExperienceAndEducation extends StatelessWidget {
   final String bio = "John Doe, a lawyer specializing in criminal law.";
@@ -291,7 +305,8 @@ class ExperienceAndEducation extends StatelessWidget {
                   hintStyle: TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.brown.shade100,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -301,9 +316,8 @@ class ExperienceAndEducation extends StatelessWidget {
                 },
               ),
 
-
               SizedBox(height: 20),
-          
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -315,14 +329,15 @@ class ExperienceAndEducation extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EditExperience()),
+                        MaterialPageRoute(
+                            builder: (context) => EditExperience()),
                       );
                     },
                     icon: Icon(Icons.edit, color: Colors.brown),
                   ),
                 ],
               ),
-          
+
               if (profileDetails.profile.experiences.isNotEmpty)
                 Column(
                   children: profileDetails.profile.experiences.map((exp) {
@@ -334,18 +349,21 @@ class ExperienceAndEducation extends StatelessWidget {
                       child: ListTile(
                         title: Text(
                           "${exp["title"]!} at ${exp["company"]!}",
-                          style: TextStyle(fontWeight: FontWeight.w600,fontSize: 14),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 14),
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               "Location: ${exp["location"]!}",
-                              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.grey[600]),
                             ),
                             Text(
                               "From: ${exp["startDate"]!} to ${exp["endDate"]!}",
-                              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.grey[600]),
                             ),
                           ],
                         ),
@@ -353,14 +371,13 @@ class ExperienceAndEducation extends StatelessWidget {
                     );
                   }).toList(),
                 )
-          
               else
                 Text(
                   "No experience added yet.",
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
               SizedBox(height: 40),
-          
+
               // Qualifications Section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -375,33 +392,36 @@ class ExperienceAndEducation extends StatelessWidget {
               SizedBox(height: 10),
               ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/uni.png'), // Replace with your image path
-                  backgroundColor: Colors.transparent, // Optional: set the background color if you want
+                  backgroundImage: AssetImage(
+                      'assets/images/uni.png'), // Replace with your image path
+                  backgroundColor: Colors
+                      .transparent, // Optional: set the background color if you want
                 ),
-          
                 title: Text(
                   "Masters in ${profileDetails.profile.education[0]["field"].toString()}",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                 ),
-                subtitle: Text("University of ${profileDetails.profile.education[0]["university"].toString()}"),
+                subtitle: Text(
+                    "University of ${profileDetails.profile.education[0]["university"].toString()}"),
                 trailing: Text(
                   "${profileDetails.profile.education[0]["year"].toString()}",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),
-          
-          
+
               ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/uni.png'), // Replace with your image path
-                  backgroundColor: Colors.transparent, // Optional: set the background color if you want
+                  backgroundImage: AssetImage(
+                      'assets/images/uni.png'), // Replace with your image path
+                  backgroundColor: Colors
+                      .transparent, // Optional: set the background color if you want
                 ),
-          
                 title: Text(
                   "Bachelors in ${profileDetails.profile.education[1]["field"].toString()}",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                 ),
-                subtitle: Text("University of ${profileDetails.profile.education[1]["university"].toString()}"),
+                subtitle: Text(
+                    "University of ${profileDetails.profile.education[1]["university"].toString()}"),
                 trailing: Text(
                   profileDetails.profile.education[1]["year"].toString(),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
@@ -415,8 +435,6 @@ class ExperienceAndEducation extends StatelessWidget {
   }
 }
 
-
-
 class ResolvedCasesScreen extends StatefulWidget {
   @override
   _ResolvedCasesScreenState createState() => _ResolvedCasesScreenState();
@@ -428,14 +446,15 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
       id: '1',
       status: RequestStatus.Accepted,
       lawyer: Lawyer(
-        id: '1',
-        name: 'John Doe',phone: "03001111211",
-        domain: 'Criminal Law',
-        image: '',
-        rating: '4.5',
-        complaintNum: 0
-      ),
-      client: Client( // Ensure a client object is added
+          id: '1',
+          name: 'John Doe',
+          phone: "03001111211",
+          domain: 'Criminal Law',
+          image: '',
+          rating: '4.5',
+          complaintNum: 0),
+      client: Client(
+        // Ensure a client object is added
         id: '1',
         name: 'Jane Smith',
         phone: '1234567890',
@@ -475,22 +494,17 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(
-                        left: 20,
-                        top: 5,
-                        bottom: 5),
+                    padding: EdgeInsets.only(left: 20, top: 5, bottom: 5),
                     decoration: BoxDecoration(
                       border: Border(
                         left: BorderSide(
-                          color:
-                              Colors.brown,
+                          color: Colors.brown,
                           width: 2.0,
                         ),
                       ),
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment
-                          .start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Domain: ${request.lawyer.domain}',
@@ -546,7 +560,6 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                       ],
                     ),
                   ),
-
                   if (expandedReviews[request.id] == true) ...[
                     Padding(
                         padding: EdgeInsets.only(left: 20),
@@ -564,9 +577,9 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                                 return Icon(
                                   index < double.parse(request.lawyer.rating)
                                       ? Icons.star
-                                      : Icons
-                                          .star_border,
-                                  color: Colors.yellow.shade700, size: 12,
+                                      : Icons.star_border,
+                                  color: Colors.yellow.shade700,
+                                  size: 12,
                                 );
                               }),
                             ],
@@ -589,12 +602,12 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
   }
 }
 
-class EditLawyerViewProfileScreen extends StatefulWidget {
+class EditProfileViewScreen extends StatefulWidget {
   @override
-  _EditLawyerViewProfileScreenState createState() => _EditLawyerViewProfileScreenState();
+  _EditProfileViewScreenState createState() => _EditProfileViewScreenState();
 }
 
-class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScreen> {
+class _EditProfileViewScreenState extends State<EditProfileViewScreen> {
   String firstName = 'John';
   String lastName = 'Doe';
   String phoneNumber = '1234567890';
@@ -628,8 +641,7 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
               Center(
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage:
-                      AssetImage(profileImagePath),
+                  backgroundImage: AssetImage(profileImagePath),
                 ),
               ),
               SizedBox(
@@ -641,11 +653,9 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.brown,
-                    padding: EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(7),
+                      borderRadius: BorderRadius.circular(7),
                     ),
                   ),
                   child: Text(
@@ -654,9 +664,7 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
                   ),
                 ),
               ),
-
               SizedBox(height: 20),
-
               Divider(
                 thickness: 1,
               ),
@@ -671,45 +679,49 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
                         fontFamily: 'Open Sans'),
                   ),
                   IconButton(
-                    icon: Icon(Icons.edit,
-                        color: Color(
-                            0xff6F7977)),
+                    icon: Icon(Icons.edit, color: Color(0xff6F7977)),
                     onPressed: () {
                       print("Edit Personal Information");
                     },
                   ),
                 ],
               ),
-
               SizedBox(height: 10),
               _buildInfoRow('First Name', firstName),
               SizedBox(height: 7),
-              Divider(thickness: 1,),
+              Divider(
+                thickness: 1,
+              ),
               SizedBox(height: 7),
-
               _buildInfoRow('Last Name', lastName),
               SizedBox(height: 7),
-              Divider(thickness: 1,),
+              Divider(
+                thickness: 1,
+              ),
               SizedBox(height: 7),
-
               _buildInfoRow('Phone Number', phoneNumber),
               SizedBox(height: 7),
-              Divider(thickness: 1,),
+              Divider(
+                thickness: 1,
+              ),
               SizedBox(height: 7),
-
               _buildInfoRow('Email', email),
               SizedBox(height: 7),
-              Divider(thickness: 1,),
+              Divider(
+                thickness: 1,
+              ),
               SizedBox(height: 7),
               _buildInfoRow('Location', location),
               SizedBox(height: 7),
-              Divider(thickness: 1,),
+              Divider(
+                thickness: 1,
+              ),
               SizedBox(height: 7),
-
               _buildInfoRow('Address', address),
-              Divider(thickness: 1,),
+              Divider(
+                thickness: 1,
+              ),
               SizedBox(height: 7),
-
             ],
           ),
         ),

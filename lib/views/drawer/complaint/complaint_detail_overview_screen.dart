@@ -84,13 +84,13 @@ class ComplaintDetailOverviewScreen extends StatelessWidget {
               complaintNum: client!.complaintNum,
               complainantDetails: Lawyer(
                 id: "123",
-                name: "jack smith",
+                name: "jack smith",phone: "03001111211",
                 domain: "Cyber law",
                 image: "assets/images/lawyer.png",
                 rating: "4.1",
                 complaintNum: 0
               ),
-              respondentDetails: client!,
+              respondentDetails: client,
               complaintDetails: {
                 "issue": issue,
                 "details": details,
@@ -107,7 +107,7 @@ class ComplaintDetailOverviewScreen extends StatelessWidget {
                     Navigator.of(dialogContext).pop();
                   }
                   if (context.mounted) {
-                    for (int i = 0; i < 3; i++) {
+                    for (int i = 0; i < 4; i++) {
                       Navigator.of(context).pop();
                     }
                   }

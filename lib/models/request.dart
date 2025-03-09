@@ -35,6 +35,7 @@ class RequestModel {
       lawyer: Lawyer(
         id: map['lawyer']['id'],
         name: map['lawyer']['name'],
+        phone: map['lawyer']['phone'],
         domain: map['lawyer']['domain'],
         image: map['lawyer']['image'],
         rating: map['lawyer']['rating'],

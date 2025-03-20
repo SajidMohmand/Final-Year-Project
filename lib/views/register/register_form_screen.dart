@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:fyp2/views/lawyer%20screens/lawyer_home_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../client screens/client_home_screen.dart';
 import '../lawyer screens/profileSetup/setup_profile_screen.dart';

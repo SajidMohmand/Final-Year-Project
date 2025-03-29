@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fyp2/providers/register_provider.dart';
@@ -9,15 +10,20 @@ import 'lawyer screens/lawyer_home_screen.dart';
 class VerificationScreen extends StatefulWidget {
   final String verificationId;
   final String role;
+  final List? list;
 
-  VerificationScreen({required this.verificationId,required this.role});
-
+  VerificationScreen({
+    required this.verificationId,
+    required this.role,
+    this.list,
+  });
   @override
   _VerificationScreenState createState() => _VerificationScreenState();
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
-  List<TextEditingController> controllers = List.generate(6, (index) => TextEditingController());
+  List<TextEditingController> controllers =
+      List.generate(6, (index) => TextEditingController());
   List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
   int currentIndex = 0;
   bool _agreedToTerms = false;
@@ -132,34 +138,123 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 TextButton(
                   onPressed: agreedToTerms
                       ? () {
-                    setState(() {
-                      _agreedToTerms = agreedToTerms;
-                    });
-                    Navigator.pop(context);
-                    if(widget.role.substring(0,2) == 'lL'){
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LawyerHomeScreen()),
-                      );
-                    }else if(widget.role.substring(0,2) == 'lC'){
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => ClientHomeScreen()),
-                      );
-                    }else if(widget.role.substring(0,2) == 'rL'){
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => ProfileSetupScreen()),
-                      );
-                    }else{
+                          setState(() {
+                            _agreedToTerms = agreedToTerms;
+                          });
+                          Navigator.pop(context);
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => ClientHomeScreen()),
-                      );
-                    }
+                          // Firestore instance
+                          FirebaseFirestore firestore =
+                              FirebaseFirestore.instance;
 
-                  }
+                          if (widget.role.substring(0, 2) == 'lL') {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LawyerHomeScreen()),
+                            );
+                          } else if (widget.role.substring(0, 2) == 'lC') {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ClientHomeScreen()),
+                            );
+                          } else if (widget.role.substring(0, 2) == 'rL' ||
+                              widget.role.substring(0, 2) == 'rC') {
+                            // Determine collection
+                            String collection =
+                                widget.role.substring(0, 2) == 'rL'
+                                    ? "lawyers"
+                                    : "clients";
+
+                            // Generate user document ID (You may replace with Firebase Auth UID)
+                            // String userId = widget.verificationId; // Assuming this is unique
+
+                            FirebaseAuth auth = FirebaseAuth.instance;
+                            User user = auth.currentUser!;
+                            print("dsdsdsdfsfdf $user");
+
+                            if (user != null) {
+                              String userId = user.uid;
+
+
+                                print("User data stored in Firestore.");
+
+                                // Move navigation outside the listener
+                                if (widget.role.substring(0, 2) == 'rL') {
+
+                                  Map<String, dynamic> userData = {
+                                    "id": userId,
+                                    "firstName": widget.list?[0],
+                                    "lastName": widget.list?[1],
+                                    "email": widget.list?[2],
+                                    "phone": widget.list?[3],
+                                    "rating": 0,
+                                    "image": 'assets/images/profile.png',
+                                    "complaintNum": 0,
+                                    "profile": {
+                                      "bio": "",
+                                      "gender" : "",
+                                      "country" : "",
+                                      "city" : "",
+                                      "domain" : [],
+                                      "education": [
+                                        {
+                                          "master": false,
+                                          "university":"",
+                                          "year":"",
+                                        },{
+                                          "bachelor": "",
+                                          "university":"",
+                                          "year":"",
+                                        }
+                                      ],
+                                      "resolveCases": [],
+                                      "experience": [],
+                                    },
+                                    "requests": [],
+                                  };
+
+                                  FirebaseFirestore.instance
+                                      .collection(collection)
+                                      .doc(userId)
+                                      .set(userData);
+
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ProfileSetupScreen()),
+                                  );
+                                } else {
+                                  Map<String, dynamic> userData = {
+                                    "id": userId,
+                                    "firstName": widget.list?[0],
+                                    "lastName": widget.list?[1],
+                                    "email": widget.list?[2],
+                                    "phone": widget.list?[3],
+                                    "image": 'assets/images/profile.png',
+                                    "complaintNum": 0,
+                                    "profile": {
+                                      "address": "",
+                                      "location" : "",
+                                      "connectedLawyer": [],
+                                      "resolveCases": [],
+                                    },
+                                    "requests": [],
+                                  };
+
+                                  FirebaseFirestore.instance
+                                      .collection(collection)
+                                      .doc(userId)
+                                      .set(userData);
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ClientHomeScreen()),
+                                  );
+                                }
+                            }
+
+                          }
+                        }
                       : null,
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(
@@ -323,9 +418,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
           child: value == "delete"
               ? Icon(Icons.backspace, size: 30)
               : Text(
-            value,
-            style: TextStyle(fontSize: 30),
-          ),
+                  value,
+                  style: TextStyle(fontSize: 30),
+                ),
         ),
       ),
     );

@@ -45,7 +45,7 @@ class ComplaintDetailOverviewScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildClientProfile(client!),
+                      _buildClientProfile(client! as Client),
                       SizedBox(height: 20),
                       Divider(thickness: 1, color: Colors.grey),
                       SizedBox(height: 20),
@@ -78,16 +78,15 @@ class ComplaintDetailOverviewScreen extends StatelessWidget {
                 .saveFormDetails(name, phone, issue, details);
 
             final client = Provider.of<ClientProvider>(context, listen: false)
-                .getClientById(id);
+                .getClientById(id) as Client;
             Provider.of<ComplaintProvider>(context, listen: false).fileComplaint(
               complainantType: "lawyer",
               complaintNum: client!.complaintNum,
               complainantDetails: Lawyer(
                 id: "123",
-                name: "jack smith",phone: "03001111211",
-                domain: "Cyber law",
+                firstName: "jack smith",lastName:"",phone: "03001111211",email: "",
                 image: "assets/images/lawyer.png",
-                rating: "4.1",
+                rating: 4.1,
                 complaintNum: 0
               ),
               respondentDetails: client,
@@ -191,7 +190,7 @@ class ComplaintDetailOverviewScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  client.name,
+                  client.firstName,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(

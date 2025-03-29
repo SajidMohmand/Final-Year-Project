@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp2/views/client%20screens/tabs/request/client_request_detail_screen.dart';
 import './request/case_detail_overview_screen.dart';
@@ -10,7 +12,12 @@ import '../../../providers/request_provider.dart';
 import './request/apply_for_request_screen.dart';
 import 'request/lawyer_list_screen.dart';
 
-class ClientRequestScreen extends StatelessWidget {
+class ClientRequestScreen extends StatefulWidget {
+  @override
+  State<ClientRequestScreen> createState() => _ClientRequestScreenState();
+}
+
+class _ClientRequestScreenState extends State<ClientRequestScreen> {
   Color _getStatusColor(RequestStatus status) {
     switch (status) {
       case RequestStatus.Accepted:
@@ -21,14 +28,46 @@ class ClientRequestScreen extends StatelessWidget {
         return Color(0xffDE3730);
       case RequestStatus.Timeout:
         return Colors.grey;
+      case RequestStatus.Resolve:
+        return Color(0xFF7483E8);
       default:
         return Colors.black;
     }
   }
 
+
+
+  @override
+  void initState() {
+
+    fetchRequestData();
+    // TODO: implement initState
+    super.initState();
+  }
+  Future<void> _refreshRequests() async {
+    final requestProvider = Provider.of<RequestProvider>(context, listen: false);
+    await requestProvider.fetchRequests();
+  }
+
+
+  void fetchRequestData(){
+    final requestProvider = Provider.of<RequestProvider>(context,listen: false);
+    requestProvider.fetchRequests();
+
+  }
+
+  Future<Lawyer?> getLawyer(RequestModel request) async {
+    final lawyerProvider = Provider.of<LawyerProvider>(context,listen: false);
+
+
+    return await lawyerProvider.getLawyerById(request.lawyerId);
+  }
+
   @override
   Widget build(BuildContext context) {
     final requestProvider = Provider.of<RequestProvider>(context);
+
+
     final requests = requestProvider.requests;
 
     return Scaffold(
@@ -38,15 +77,32 @@ class ClientRequestScreen extends StatelessWidget {
       ),
 
       body: requests.isNotEmpty
-          ? ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: requests.length,
-              itemBuilder: (context, index) {
-                final request = requests[index];
-                final statusText = request.status.toString().split('.').last;
+          ?RefreshIndicator(
+        onRefresh: _refreshRequests,
+            child: ListView.builder(
+                    padding: EdgeInsets.all(16),
+                    itemCount: requests.length,
+                    itemBuilder: (context, index) {
+            final request = requests[index];
+            final statusText = request.status.toString().split('.').last;
+
+
+            return FutureBuilder<Lawyer?>(
+
+              future: getLawyer(request),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator()); // Show loading indicator
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                } else if (!snapshot.hasData || snapshot.data == null) {
+                  return Center(child: Text("No lawyer found"));
+                }
+
+                Lawyer lawyer = snapshot.data!; // Lawyer object from FutureBuilder
 
                 return GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -54,74 +110,72 @@ class ClientRequestScreen extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Container(
-                    child: SingleChildScrollView(
-                      child: Card(
-                        color: Colors.brown.shade100,
-                        elevation: 4,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        child: Padding(
-                          padding: EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Card(
+                    color: Colors.brown.shade100,
+                    elevation: 4,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    child: Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Request # ${request.lawyer.id}",
-                                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
-                                  ),
-                                  Container(
-                                    height: 24,
-                                    width: 85,
-                                    decoration: BoxDecoration(
-                                      color: _getStatusColor(request.status),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                    child: Center(
-                                      child: Text(
-                                        statusText,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 11,
-                                        ),
-                                      ),
+                              Text(
+                                "Request # ${lawyer.id}",
+                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
+                              ),
+                              Container(
+                                height: 24,
+                                width: 85,
+                                decoration: BoxDecoration(
+                                  color: _getStatusColor(request.status),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                child: Center(
+                                  child: Text(
+                                    statusText,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11,
                                     ),
                                   ),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-
-                              Text(
-                                "Case Domain: ${request.lawyer.domain}",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                              ),
-                              SizedBox(height: 8),
-
-                              Text(
-                                "Lawyer: ${request.lawyer.name}",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.25,
                                 ),
                               ),
-
-                              Text("Issue: ${request.formDetails['issue']}"),
-                              SizedBox(height: 12),
-
                             ],
                           ),
-                        ),
+                          SizedBox(height: 8),
+
+                          Text(
+                              "Case Domain: ${lawyer.profile != null && lawyer.profile!.selectedDomains.isNotEmpty ? lawyer.profile!.selectedDomains[0] : "N/A"}",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(height: 8),
+
+                          Text(
+                            "Lawyer: ${lawyer.firstName}",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.25,
+                            ),
+                          ),
+
+                          Text("Issue: ${request.formDetails['issue']}"),
+                          SizedBox(height: 12),
+                        ],
                       ),
                     ),
                   ),
                 );
-
               },
-            )
+            );
+                    },
+                  ),
+          )
+
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,

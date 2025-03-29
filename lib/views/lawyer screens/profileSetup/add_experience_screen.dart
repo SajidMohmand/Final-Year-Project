@@ -35,18 +35,19 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
   void saveExperiences() {
     final profileProvider = Provider.of<ProfileProvider>(context, listen: false);
 
-    List<Map<String, String>> experienceData = experiences.map((exp) {
-      return {
+    for (var exp in experiences) {
+      Map<String, String> experienceData = {
         "title": exp["title"]!.text,
         "company": exp["company"]!.text,
         "location": exp["location"]!.text,
         "startDate": exp["startDate"]!.text,
         "endDate": exp["endDate"]!.text,
       };
-    }).toList();
 
-    profileProvider.setExperiences(experienceData);
+      profileProvider.addExperience(experienceData);
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

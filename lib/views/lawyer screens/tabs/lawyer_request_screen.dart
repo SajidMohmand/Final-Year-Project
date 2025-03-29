@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:fyp2/models/client.dart';
+import 'package:fyp2/providers/client_provider.dart';
 import 'package:fyp2/views/lawyer%20screens/tabs/request/request_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -23,15 +25,22 @@ class _LawyerRequestScreenState extends State<LawyerRequestScreen> {
       case RequestStatus.Timeout:
         return Colors.grey;
       case RequestStatus.Resolve:
-        return Colors.brown.shade300;
+        return Color(0xFF7483E8);
       default:
         return Colors.black;
     }
   }
 
+  Client? client;
+
+  void fetchClient(RequestModel request)async{
+    client = await Provider.of<ClientProvider>(context,listen: false).getClientById(request.clientId);
+  }
+
   @override
   Widget build(BuildContext context) {
     final requestProvider = Provider.of<RequestProvider>(context);
+    requestProvider.fetchLawyerRequests();
     final requests = requestProvider.requests;
 
     return Scaffold(
@@ -48,6 +57,7 @@ class _LawyerRequestScreenState extends State<LawyerRequestScreen> {
                 final request = requests[index];
                 final statusText = request.status.toString().split('.').last;
 
+                fetchClient(request);
                 return GestureDetector(
                   onTap: (){
                     Navigator.push(
@@ -72,7 +82,7 @@ class _LawyerRequestScreenState extends State<LawyerRequestScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Request # ${request.client.id}",
+                                    "Request # ${request.clientId}",
                                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
                                   ),
                                   Container(
@@ -97,14 +107,14 @@ class _LawyerRequestScreenState extends State<LawyerRequestScreen> {
                               ),
                               SizedBox(height: 8),
 
-                              Text(
-                                "Phone: ${request.client.phone}",
+                              client == null ? Center(child: CircularProgressIndicator(),):Text(
+                                "Phone: ${client!.phone}",
                                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                               ),
                               SizedBox(height: 8),
 
-                              Text(
-                                "Client: ${request.client.name}",
+                              client == null ? Center(child: CircularProgressIndicator(),):Text(
+                                "Client: ${client!.firstName}",
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,

@@ -64,7 +64,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                     if (isExpanded) ...[
                       SizedBox(height: 10),
                       Text(
-                        "Respondent: ${complaint.respondentDetails.name ?? 'Unknown'}",
+                        "Respondent: ${complaint.respondentDetails.firstName ?? 'Unknown'}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),

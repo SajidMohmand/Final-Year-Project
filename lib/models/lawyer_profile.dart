@@ -1,68 +1,61 @@
 class Profile {
-  String id;
   String? bio;
   String? gender;
   String? country;
   String? city;
-  String? selectedAvailability;
-
-  // Education as a list of maps (for Bachelor's & Master's)
-  List<Map<String, String>> education;
-
-  // Experiences
+  List<Map<String, dynamic>> education;
   List<Map<String, String>> experiences;
-
-  // Selected Domains
+  List<Map<String, dynamic>> resolveCases; // Storing resolved cases as a map
   List<String> selectedDomains;
 
   Profile({
-    required this.id,
     this.bio,
     this.gender,
     this.country,
     this.city,
-    this.selectedAvailability,
-    List<Map<String, String>>? education,
+    List<Map<String, dynamic>>? education,
     List<Map<String, String>>? experiences,
+    List<Map<String, dynamic>>? resolveCases,
     List<String>? selectedDomains,
   })  : education = education ?? [],
         experiences = experiences ?? [],
+        resolveCases = resolveCases ?? [],
         selectedDomains = selectedDomains ?? [];
 
+  // Convert to Firestore-compatible map
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'bio': bio,
       'gender': gender,
       'country': country,
       'city': city,
-      'selectedAvailability': selectedAvailability,
       'education': education,
       'experiences': experiences,
+      'resolveCases': resolveCases,
       'selectedDomains': selectedDomains,
     };
   }
 
+  // Create from Firestore document
   factory Profile.fromMap(Map<String, dynamic> map) {
     return Profile(
-      id: map['id'],
       bio: map['bio'],
       gender: map['gender'],
       country: map['country'],
       city: map['city'],
-      selectedAvailability: map['selectedAvailability'],
-      education: List<Map<String, String>>.from(map['education'] ?? []),
-      experiences: List<Map<String, String>>.from(map['experiences'] ?? []),
-      selectedDomains: List<String>.from(map['selectedDomains'] ?? []),
+      education: (map['education'] is List)
+          ? List<Map<String, dynamic>>.from(map['education'])
+          : [],
+      experiences: (map['experiences'] is List)
+          ? List<Map<String, String>>.from(map['experiences'])
+          : [],
+      resolveCases: (map['resolveCases'] is List)
+          ? List<Map<String, dynamic>>.from(map['resolveCases'])
+          : [],
+      selectedDomains: (map['selectedDomains'] is List)
+          ? List<String>.from(map['selectedDomains'])
+          : [],
     );
   }
 
-  void addEducation(String level, String field, String university, String year) {
-    education.add({
-      'level': level, // "Bachelor" or "Master"
-      'field': field,
-      'university': university,
-      'year': year,
-    });
-  }
 }

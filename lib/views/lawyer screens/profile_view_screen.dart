@@ -1,6 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:fyp2/providers/client_provider.dart';
+import 'package:fyp2/providers/lawyer_provider.dart';
+import 'package:fyp2/providers/request_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/client.dart';
 import '../../../models/lawyer.dart';
@@ -434,41 +438,55 @@ class ResolvedCasesList extends StatefulWidget {
 }
 
 class _ResolvedCasesListState extends State<ResolvedCasesList> {
-  final List<RequestModel> requests = [
-    RequestModel(
-      id: '1',
-      status: RequestStatus.Accepted,
-      lawyer: Lawyer(
-        id: '1',
-        name: 'John Doe',
-        phone: "03001111211",
-        domain: 'Criminal Law',
-        image: '',
-        rating: '4.5',
-        complaintNum: 0,
-      ),
-      client: Client(
-        id: '1',
-        name: 'Jane Smith',
-        phone: '1234567890',
-        image: '',
-        complaintNum: 0,
-      ),
-      formDetails: {
-        'name': 'Jane Smith',
-        'phone': '1234567890',
-        'issue': 'Theft Case',
-        'details': 'Details about the case...',
-      },
-    ),
-  ];
+  List<RequestModel> requests = [];
+
+  Client? client;
+  Lawyer? lawyer;
 
   Map<String, bool> expandedReviews = {};
+
+
+  @override
+  void initState() {
+
+    fetchRequest();
+    // TODO: implement initState
+    super.initState();
+  }
+
+
+  void fetchRequest()async{
+    final provider = Provider.of<RequestProvider>(context,listen: false);
+
+    await provider.fetchRequests();
+    requests = provider.requests;
+  }
+
+  void fetchClient(RequestModel request)async{
+
+
+    Client? cl = await Provider.of<ClientProvider>(context).getClientById(request.clientId);
+    setState(() {
+      client = cl;
+    });
+  }
+
+  void fetchLawyer(RequestModel request)async{
+
+    Lawyer? l = await Provider.of<LawyerProvider>(context).getLawyerById(request.lawyerId);
+    setState(() {
+      lawyer = l;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: requests.map((request) {
+
+        fetchClient(request);
+        fetchLawyer(request);
         return Padding(
           padding: EdgeInsets.all(15),
           child: Container(
@@ -485,13 +503,13 @@ class _ResolvedCasesListState extends State<ResolvedCasesList> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    request.client.name,
+                    client!.firstName,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   Row(
                     children: List.generate(5, (index) {
                       return Icon(
-                        index < double.parse(request.lawyer.rating)
+                        index < double.parse(lawyer!.rating.toString())
                             ? Icons.star
                             : Icons.star_border,
                         color: Colors.yellow.shade700,

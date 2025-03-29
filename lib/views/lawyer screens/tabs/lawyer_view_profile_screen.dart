@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp2/providers/profile_provider.dart';
 import 'package:fyp2/views/lawyer%20screens/tabs/Edit%20Profile/edit_experience.dart';
@@ -10,10 +12,21 @@ import '../../../models/lawyer.dart';
 import '../../../models/request.dart';
 import '../../../providers/lawyer_provider.dart';
 
-class LawyerViewProfileScreen extends StatelessWidget {
+
+class LawyerViewProfileScreen extends StatefulWidget {
+  @override
+  State<LawyerViewProfileScreen> createState() => _LawyerViewProfileScreenState();
+}
+
+class _LawyerViewProfileScreenState extends State<LawyerViewProfileScreen> {
+  Future<Lawyer?> fetchLawyer() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String id = auth.currentUser?.uid ?? '';
+    return await Provider.of<LawyerProvider>(context, listen: false).getLawyerById(id);
+  }
+
   @override
   Widget build(BuildContext context) {
-    var profileDetails = Provider.of<ProfileProvider>(context,listen: false).profile;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(154),
@@ -30,8 +43,7 @@ class LawyerViewProfileScreen extends StatelessWidget {
                   child: AppBar(
                     automaticallyImplyLeading: false,
                     backgroundColor: Color(0xff6D4905),
-                    elevation: 0, // Removes shadow
-
+                    elevation: 0,
                     centerTitle: true,
                   ),
                 ),
@@ -58,195 +70,162 @@ class LawyerViewProfileScreen extends StatelessWidget {
           },
         ),
       ),
+      body: FutureBuilder<Lawyer?>(
+        future: fetchLawyer(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return Center(child: Text("Lawyer not found"));
+          }
 
-      body: Padding(
-        padding: const EdgeInsets.only(
-            top: 55.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 40),
-                  child: Text(
-                    "John smith",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.edit, color: Color(0xffA3ADAB)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditLawyerViewProfileScreen(),
-                      ),
-                    );
-                  },
-                )
-              ],
-            ),
-            Center(child: Text(profileDetails.bio.toString(),style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),textAlign: TextAlign.center,)),
-            Center(child: Text("Available in ${profileDetails.country}",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,fontFamily: 'OpenSans'),)),
+          Lawyer lawyer = snapshot.data!;
 
-            SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(  // Wrap the first container in Expanded
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black26),
+          return SingleChildScrollView(
+            child:Padding(
+              padding: EdgeInsets.only(top: 55),
+              child: Column(
+                children: [
+
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: EdgeInsets.only(left: 50),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${lawyer.firstName ?? ''} ${lawyer.lastName ?? ''}",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Lives in",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54,
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Color(0xffA3ADAB)),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditLawyerProfileScreen(),
                               ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "${profileDetails.country}, ${profileDetails.city}",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(width: 10),
-                    Expanded(  // Wrap the second container in Expanded
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black26),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Rating & Reviews",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54,
+                  ),
+
+
+                  Text(
+                    lawyer.profile?.bio ?? "No bio available",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    "Available in ${lawyer.profile?.country ?? 'Unknown'}",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black26),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Lives in",
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black54),
                               ),
-                            ),
-                            SizedBox(height: 5),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,  // Yellow color for the star
-                                  size: 16,  // Size of the star
-                                ),
-                                SizedBox(width: 5),  // Space between star and rating
-                                Text(
-                                  "4.7",  // Example rating, replace with dynamic value if needed
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black54,
+                              SizedBox(height: 5),
+                              Text(
+                                "${lawyer.profile?.country ?? 'Unknown'}, ${lawyer.profile?.city ?? 'Unknown'}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 12, color: Colors.black87),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black26),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Rating & Reviews",
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black54),
+                              ),
+                              SizedBox(height: 5),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.star, color: Colors.yellow, size: 16),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    lawyer.rating.toString() ?? 'No Rating',
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black54),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                    ],
+                  ),
+                  Divider(thickness: 2),
+                  ListTile(
+                    leading: Container(
+                      height: 42,
+                      width: 42,
+                      color: Colors.brown.shade100,
+                      child: Icon(Icons.gpp_good, color: Colors.brown, size: 28),
                     ),
-                  ],
-                ),
-              ),
-            ),
-
-            Divider(thickness: 2),
-            SizedBox(
-              height: 20,
-            ),
-            ListTile(
-              leading: Container(
-                height: 42,
-                width: 42,
-                color: Colors.brown.shade100,
-                child: Icon(
-                  Icons.gpp_good,
-                  color: Colors.brown,
-                  size: 28,
-                ),
-              ),
-              title: Text("Resolved Cases"),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 20,
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ResolvedCasesScreen(),
+                    title: Text("Resolved Cases"),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ResolvedCasesScreen()),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Divider(
-              thickness: 1,
-            ),
-            SizedBox(height: 5),
-            ListTile(
-              leading: Container(
-                height: 42,
-                width: 42,
-                color: Colors.brown.shade100,
-                child: Image.asset(
-                  'assets/images/lawyer.png',
-                  scale: 1.7,
-                ),
-              ),
-              title: Text("Education and Experience"),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 20,
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExperienceAndEducation(),
+                  Divider(thickness: 1),
+                  ListTile(
+                    leading: Container(
+                      height: 42,
+                      width: 42,
+                      color: Colors.brown.shade100,
+                      child: Image.asset('assets/images/lawyer.png', scale: 1.7),
+                    ),
+                    title: Text("Education and Experience"),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ExperienceAndEducation()),
+                      );
+                    },
                   ),
-                );
-              },
+                  Divider(thickness: 1),
+                ],
+              ),
             ),
-            SizedBox(height: 5),
-            Divider(
-              thickness: 1,
-            ),
-            SizedBox(height: 5),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
+
 
 
 class ExperienceAndEducation extends StatefulWidget {
@@ -255,17 +234,11 @@ class ExperienceAndEducation extends StatefulWidget {
 }
 
 class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
-  final String bio = "John Doe, a lawyer specializing in criminal law.";
+  String? bio;
 
-  final List<String> experience = [
-    "Senior Associate at XYZ Law Firm (2015-2020)",
-    "Legal Advisor at ABC Corporation (2020-Present)",
-  ];
+  List<Map<String, dynamic>>? experience;
 
-  final List<String> qualifications = [
-    "LLB from Harvard University (2015)",
-    "Juris Doctor (JD) from Yale University (2018)",
-  ];
+  List<Map<String, dynamic>>? qualifications;
   bool needsUpdate = false;
 
   @override
@@ -277,13 +250,51 @@ class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
       });
     }
   }
+  Lawyer? lawyer;
+
+  @override
+  void initState() {
+    super.initState();
+    experience = []; // Initialize as empty
+    qualifications = []; // Initialize as empty
+    fetchData(); // Call async function
+  }
+
+  Future<void> fetchData() async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      String id = auth.currentUser!.uid;
+
+      final provider = Provider.of<LawyerProvider>(context, listen: false);
+      final profile = Provider.of<ProfileProvider>(context, listen: false);
+      // Fetch data asynchronously
+      lawyer = await provider.getLawyerById(id);
+      experience = await profile.fetchExperience();
+      qualifications = await provider.fetchEducation();
+
+
+      setState(() {
+        profile.bioController.text = lawyer?.profile!.bio ?? ''; // Set previous bio
+      });
+      bio = lawyer?.profile?.bio ?? ''; // Handle null safety
+
+
+    } catch (error) {
+      print("Error fetching data: $error");
+    }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
-    var profileDetails = Provider.of<ProfileProvider>(context);
+    var profile = Provider.of<ProfileProvider>(context,listen: false);
+    var lawyerProvider = Provider.of<LawyerProvider>(context,listen: false);
+    fetchData();
     return Scaffold(
       appBar: AppBar(title: Text("Education and Experience")),
-      body: Padding(
+      body: experience == null || qualifications == null ? Center(child: CircularProgressIndicator()) :Padding(
         padding: EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
@@ -296,7 +307,7 @@ class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
               ),
               SizedBox(height: 10),
               TextFormField(
-                controller: profileDetails.bioController,
+                controller: profile.bioController,
                 maxLines: 4,
                 decoration: InputDecoration(
                   hintText: "Update your bio...",
@@ -305,6 +316,11 @@ class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
                   fillColor: Colors.brown.shade100,
                   contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 ),
+                onSaved: (newBio) async {
+                  if (newBio!.trim().isNotEmpty) {
+                    await profile.updateBio(newBio.trim());
+                  }
+                },
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Bio is required';
@@ -313,6 +329,22 @@ class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
                 },
               ),
 
+              Align(
+                alignment: Alignment.topRight,
+                child: TextButton(onPressed: () async {
+                  if (profile.bioController.text.trim().isNotEmpty) {
+                    await profile.updateBio(profile.bioController.text.trim());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Center(child: Text("Bio updated successfully!")),
+                        duration: Duration(seconds: 2), // Show for 2 seconds
+                      ),
+                    );
+
+                  }
+                },
+                  child: Text("Save",style: TextStyle(color: Colors.brown,fontSize: 15)),),
+              ),
 
               SizedBox(height: 20),
 
@@ -342,10 +374,11 @@ class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
                 ],
               ),
 
-              if (profileDetails.profile.experiences.isNotEmpty)
+              if (experience!.isNotEmpty)
                 Column(
-                  children: profileDetails.profile.experiences.map((exp) {
+                  children: experience!.map((exp) {
                     return Container(
+                      margin: EdgeInsets.only(top: 3,bottom: 3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(2),
                         color: Colors.brown.shade100,
@@ -366,6 +399,7 @@ class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
                               "From: ${exp["startDate"]!} to ${exp["endDate"]!}",
                               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                             ),
+
                           ],
                         ),
                       ),
@@ -400,40 +434,55 @@ class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
                 ],
               ),
               SizedBox(height: 10),
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/uni.png'), // Replace with your image path
-                  backgroundColor: Colors.transparent, // Optional: set the background color if you want
+
+              if (qualifications != null && qualifications!.isNotEmpty)
+                Column(
+                  children: [
+                    if (qualifications!.isNotEmpty && qualifications![0]['master'] == true)
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: AssetImage('assets/images/uni.png'),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        title: Text(
+                          "Masters in LLM",
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                        ),
+                        subtitle: Text(
+                          "University of ${qualifications![0]["university"] ?? "Not specified"}",
+                        ),
+                        trailing: Text(
+                          qualifications![0]["year"] ?? "Year not specified",
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+
+                    if (qualifications!.length > 1) // Check if Bachelor exists
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: AssetImage('assets/images/uni.png'),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        title: Text(
+                          "Bachelors in LLB",
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                        ),
+                        subtitle: Text(
+                          "University of ${qualifications![1]["university"] ?? "Not specified"}",
+                        ),
+                        trailing: Text(
+                          qualifications![1]["year"] ?? "Year not specified",
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                  ],
+                )
+              else
+                Text(
+                  "No qualifications added yet.",
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
 
-                title: Text(
-                  "Masters in ${profileDetails.profile.education[0]["field"].toString()}",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                ),
-                subtitle: Text("University of ${profileDetails.profile.education[0]["university"].toString()}"),
-                trailing: Text(
-                  "${profileDetails.profile.education[0]["year"].toString()}",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
-              ),
-
-
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/uni.png'), // Replace with your image path
-                  backgroundColor: Colors.transparent, // Optional: set the background color if you want
-                ),
-
-                title: Text(
-                  "Bachelors in ${profileDetails.profile.education[1]["field"].toString()}",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                ),
-                subtitle: Text("University of ${profileDetails.profile.education[1]["university"].toString()}"),
-                trailing: Text(
-                  profileDetails.profile.education[1]["year"].toString(),
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
-              ),
             ],
           ),
         ),
@@ -444,56 +493,52 @@ class _ExperienceAndEducationState extends State<ExperienceAndEducation> {
 
 
 
+
 class ResolvedCasesScreen extends StatefulWidget {
   @override
   _ResolvedCasesScreenState createState() => _ResolvedCasesScreenState();
 }
 
 class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
-  final List<RequestModel> requests = [
-    RequestModel(
-      id: '1',
-      status: RequestStatus.Accepted,
-      lawyer: Lawyer(
-        id: '1',
-        name: 'John Smith',phone: "03001111211",
-        domain: 'Criminal Law',
-        image: '',
-        rating: '4.5',
-        complaintNum: 0
-      ),
-      client: Client( // Ensure a client object is added
-        id: '1',
-        name: 'Jane Smith',
-        phone: '1234567890',
-        image: '',
-        complaintNum: 0,
-      ),
-      formDetails: {
-        'name': 'Jane Smith',
-        'phone': '1234567890',
-        'issue': 'Theft Case',
-        'details': 'Details about the case...',
-      },
-    ),
-  ];
+  List<Map<String, String>>? resolveCases;
+  Map<String, bool> expandedReviews = {}; // Tracks expanded state per case
 
-  Map<String, bool> expandedReviews = {};
+  @override
+  void initState() {
+    super.initState();
+    fetchResolvedCases();
+  }
+
+  void fetchResolvedCases() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String? id = auth.currentUser?.uid;
+
+    if (id != null) {
+      List<Map<String, String>>? data =
+      await Provider.of<LawyerProvider>(context, listen: false).getResolvedCases();
+      setState(() {
+        resolveCases = data;
+        expandedReviews = {for (var caseData in data ?? []) caseData["caseId"]!: false};
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Resolved Cases")),
-      body: ListView.builder(
-        itemCount: requests.length,
+      body: resolveCases == null
+          ? Center(child: Text("No resolved cases available")) // Handle loading state
+          : ListView.builder(
+        itemCount: resolveCases!.length,
         itemBuilder: (context, index) {
-          final request = requests[index];
+          final caseData = resolveCases![index];
+          String caseId = caseData["caseId"] ?? "unknown"; // Use unique identifier
 
           return Padding(
             padding: EdgeInsets.all(15),
             child: Container(
-              padding:
-                  EdgeInsets.only(left: 35, top: 35, right: 35, bottom: 15),
+              padding: EdgeInsets.symmetric(horizontal: 35, vertical: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.brown.shade50,
@@ -502,99 +547,84 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(
-                        left: 20,
-                        top: 5,
-                        bottom: 5),
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                     decoration: BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
-                          color:
-                              Colors.brown,
-                          width: 2.0,
-                        ),
-                      ),
+                      border: Border(left: BorderSide(color: Colors.brown, width: 2.0)),
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment
-                          .start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Domain: ${request.lawyer.domain}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
+                          'Domain: ${caseData["domain"]}',
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                         ),
-
+                        SizedBox(height: 5),
+                        Text(
+                          'Client: ${caseData["clientName"] ?? "N/A"}',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                        ),
                       ],
                     ),
                   ),
                   SizedBox(height: 10),
                   Padding(
                     padding: EdgeInsets.only(left: 20),
-                    child: Text('Issue: ${request.formDetails['issue']}'),
+                    child: Text('Issue: ${caseData["issue"]}'),
                   ),
                   SizedBox(height: 5),
                   Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Divider(
-                        thickness: 1,
-                      )),
+                    padding: EdgeInsets.only(left: 20),
+                    child: Divider(thickness: 1),
+                  ),
                   SizedBox(height: 5),
                   Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Review",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w400)),
+                        Text("Review", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              expandedReviews[request.id] =
-                                  !(expandedReviews[request.id] ?? false);
+                              expandedReviews[caseId] = !(expandedReviews[caseId] ?? false);
                             });
                           },
                           child: Icon(
-                            expandedReviews[request.id] == true
-                                ? Icons.expand_more
-                                : Icons.chevron_right,
+                            expandedReviews[caseId] == true ? Icons.expand_more : Icons.chevron_right,
                           ),
                         ),
                       ],
                     ),
                   ),
-
-                  if (expandedReviews[request.id] == true) ...[
+                  if (expandedReviews[caseId] == true) ...[
                     Padding(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Divider(
-                          thickness: 1,
-                        )),
+                      padding: EdgeInsets.only(left: 20),
+                      child: Divider(thickness: 1),
+                    ),
                     SizedBox(height: 10),
                     Container(
                       padding: EdgeInsets.only(left: 20),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               ...List.generate(5, (index) {
                                 return Icon(
-                                  index < double.parse(request.lawyer.rating)
+                                  index < int.parse(caseData["rating"] ?? "0")
                                       ? Icons.star
-                                      : Icons
-                                          .star_border,
-                                  color: Colors.yellow.shade700, size: 12,
+                                      : Icons.star_border,
+                                  color: Colors.yellow.shade700,
+                                  size: 12,
                                 );
                               }),
                             ],
                           ),
                           SizedBox(height: 5),
                           Text(
-                              'Excellent service! Highly recommended for criminal cases.',
-                              style: TextStyle(fontSize: 14)),
+                            caseData["review"] ?? "No review available",
+                            style: TextStyle(fontSize: 14),
+                          ),
                         ],
                       ),
                     ),
@@ -609,20 +639,42 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
   }
 }
 
-class EditLawyerViewProfileScreen extends StatefulWidget {
+class EditLawyerProfileScreen extends StatefulWidget {
+  EditLawyerProfileScreen();
   @override
-  _EditLawyerViewProfileScreenState createState() => _EditLawyerViewProfileScreenState();
+  _EditLawyerProfileScreenState createState() => _EditLawyerProfileScreenState();
 }
 
-class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScreen> {
-  String firstName = 'John';
-  String lastName = 'Doe';
-  String phoneNumber = '1234567890';
-  String email = 'johndoe@example.com';
-  String location = 'New York, USA';
-  String address = '1234 Elm Street, NY';
+class _EditLawyerProfileScreenState extends State<EditLawyerProfileScreen> {
 
   String profileImagePath = 'assets/images/profile.png';
+
+  Lawyer? lawyer;
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    lawyer = null;
+    fetchClient();
+  }
+  @override
+  void initState() {
+    super.initState();
+    fetchClient();
+  }
+
+  void fetchClient() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String? id = auth.currentUser?.uid;
+
+    if (id != null) {
+     Lawyer? data = await Provider.of<LawyerProvider>(context, listen: false).getLawyerById(id);
+      setState(() {
+        lawyer = data;
+      });
+    }
+  }
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -637,9 +689,10 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(title: Text("Edit Profile")),
-      body: Padding(
+      body: lawyer == null? Center(child: CircularProgressIndicator()):Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
@@ -649,7 +702,7 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
                 child: CircleAvatar(
                   radius: 50,
                   backgroundImage:
-                      AssetImage(profileImagePath),
+                  AssetImage(profileImagePath),
                 ),
               ),
               SizedBox(
@@ -665,7 +718,7 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
                         vertical: 10, horizontal: 20),
                     shape: RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(7),
+                      BorderRadius.circular(7),
                     ),
                   ),
                   child: Text(
@@ -694,39 +747,41 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
                     icon: Icon(Icons.edit,
                         color: Color(
                             0xff6F7977)),
-                    onPressed: () {
+                    onPressed: () async{
+                      await Navigator.push(context, MaterialPageRoute(builder: (context)=> UpdateLawyerProfileScreen()));
                       print("Edit Personal Information");
+                      setState(() {
+                        fetchClient();
+
+                      });
                     },
                   ),
                 ],
               ),
 
               SizedBox(height: 10),
-              _buildInfoRow('First Name', firstName),
+              _buildInfoRow('First Name', lawyer!.firstName),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              _buildInfoRow('Last Name', lastName),
+              _buildInfoRow('Last Name', lawyer!.lastName),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              _buildInfoRow('Phone Number', phoneNumber),
+              _buildInfoRow('Phone Number', lawyer!.phone),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              _buildInfoRow('Email', email),
-              SizedBox(height: 7),
-              Divider(thickness: 1,),
-              SizedBox(height: 7),
-              _buildInfoRow('Location', location),
+              _buildInfoRow('Email', lawyer!.email),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              _buildInfoRow('Address', address),
+              _buildInfoRow('Address', "${lawyer!.profile!.city.toString()} ${lawyer!.profile!.country}"),
+              SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
@@ -737,7 +792,7 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String? value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -747,7 +802,7 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
               fontSize: 14,
               fontFamily: "Open Sans",
             )),
-        Text(value,
+        Text(value ?? 'N/A', // Default value for null
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -756,4 +811,178 @@ class _EditLawyerViewProfileScreenState extends State<EditLawyerViewProfileScree
       ],
     );
   }
+
+}
+class UpdateLawyerProfileScreen extends StatefulWidget {
+  @override
+  _UpdateLawyerProfileScreenState createState() =>
+      _UpdateLawyerProfileScreenState();
+}
+
+class _UpdateLawyerProfileScreenState extends State<UpdateLawyerProfileScreen> {
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+
+  String profileImagePath = 'assets/images/profile.png';
+  String userId = '';
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    fetchClient();
+  }
+
+  Future<void> fetchClient() async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User? user = auth.currentUser;
+      if (user != null) {
+        userId = user.uid;
+
+        Lawyer? lawyer = await Provider.of<LawyerProvider>(context, listen: false).getLawyerById(userId);
+
+        if (lawyer != null) {
+          setState(() {
+            firstNameController.text = lawyer.firstName;
+            lastNameController.text = lawyer.lastName;
+            phoneController.text = lawyer.phone;
+            emailController.text = lawyer.email;
+            cityController.text = lawyer.profile?.city ?? '';
+            countryController.text = lawyer.profile?.country ?? '';
+          });
+        } else {
+          print("Lawyer not found");
+        }
+      }
+    } catch (error) {
+      print("Error fetching client: $error");
+    }
+  }
+
+  Future<void> updateClientProfile() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await FirebaseFirestore.instance.collection('lawyers').doc(userId).update({
+      'firstName': firstNameController.text,
+      'lastName': lastNameController.text,
+      'phone': phoneController.text,
+      'email': emailController.text,
+      'profile.city': cityController.text,
+      'profile.country': countryController.text,
+    });
+
+    setState(() {
+      isLoading = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Center(child: Text("Profile Updated Successfully!",style: TextStyle(color: Colors.white),)),
+      backgroundColor: Colors.brown,
+    ));
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        profileImagePath = image.path;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Edit Profile")),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage(profileImagePath),
+                ),
+              ),
+              SizedBox(height: 15),
+              Center(
+                child: TextButton(
+                  onPressed: _pickImage,
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.brown,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                  ),
+                  child: Text("Change Image", style: TextStyle(fontSize: 16)),
+                ),
+              ),
+              SizedBox(height: 20),
+              _buildTextField("First Name", firstNameController),
+              _buildTextField("Last Name", lastNameController),
+              _buildTextField("Phone Number", phoneController),
+              _buildTextField("Email", emailController),
+              _buildTextField("City", cityController),
+              _buildTextField("Country", countryController),
+              SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity, // Full width
+                child: TextButton(
+                  onPressed: updateClientProfile,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.brown, // Background color
+                    foregroundColor: Colors.white, // Text color
+                    padding: EdgeInsets.symmetric(vertical: 12), // Adjust padding
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5), // Reduced border radius
+                    ),
+                  ),
+                  child: Text(
+                    "Save",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+            labelText: label,
+            fillColor: Colors.brown.shade100,
+            filled: true
+        ),
+      ),
+    );
+  }
+
 }

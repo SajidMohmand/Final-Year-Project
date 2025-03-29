@@ -6,15 +6,15 @@ enum RequestStatus { Accepted, Awaiting, Declined, Timeout, Resolve }
 class RequestModel {
   final String id;
   final RequestStatus status;
-  final Lawyer lawyer;
-  final Client client;
+  final String lawyerId;
+  final String clientId;
   final Map<String, String> formDetails;
 
   RequestModel({
     required this.id,
     required this.status,
-    required this.lawyer,
-    required this.client,
+    required this.lawyerId,
+    required this.clientId,
     required this.formDetails,
   });
 
@@ -22,33 +22,38 @@ class RequestModel {
     return {
       'id': id,
       'status': status.toString().split('.').last,
-      'lawyer': lawyer.toMap(),
-      'client': client.toMap(),
+      'lawyerId': lawyerId,
+      'clientId': clientId,
       'formDetails': formDetails,
     };
   }
 
-  factory RequestModel.fromMap(Map<String, dynamic> map) {
+  factory RequestModel.fromMap(Map<String, dynamic>? map) {
+    if (map == null) {
+      return RequestModel(
+        id: '',
+        status: RequestStatus.Awaiting, // Default status
+        lawyerId: '',
+        clientId: '',
+        formDetails: {}, // Empty map
+      );
+    }
+
     return RequestModel(
-      id: map['id'],
-      status: RequestStatus.values.firstWhere((e) => e.toString().split('.').last == map['status']),
-      lawyer: Lawyer(
-        id: map['lawyer']['id'],
-        name: map['lawyer']['name'],
-        phone: map['lawyer']['phone'],
-        domain: map['lawyer']['domain'],
-        image: map['lawyer']['image'],
-        rating: map['lawyer']['rating'],
-        complaintNum: map['lawyer']['complaintNum'],
-      ),
-      client: Client(
-        id: map['client']['id'],
-        name: map['client']['name'],
-        phone: map['client']['phone'],
-        image: map['client']['image'],
-        complaintNum: map['client']['complaintNum'],
-      ),
-      formDetails: Map<String, String>.from(map['formDetails']),
+      id: map['id'] ?? '',
+      status: map['status'] != null
+          ? RequestStatus.values.firstWhere(
+            (e) => e.toString().split('.').last == map['status'],
+        orElse: () => RequestStatus.Awaiting, // Default status
+      )
+          : RequestStatus.Awaiting, // Default status
+
+      lawyerId: map["lawyerId"] ?? '',
+      clientId: map["clientId"] ?? '',
+      formDetails: map['formDetails'] != null
+          ? Map<String, String>.from(map['formDetails'])
+          : {}, // Empty map if null
     );
   }
+
 }

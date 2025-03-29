@@ -151,7 +151,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "Complainant: ${complaint.complainantDetails.name ?? 'Unknown'}",
+                            "Complainant: ${complaint.complainantDetails.firstName ?? 'Unknown'}",
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -169,7 +169,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "Respondent: ${complaint.respondentDetails.name ?? 'Unknown'}",
+                            "Respondent: ${complaint.respondentDetails.firstName ?? 'Unknown'}",
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -298,9 +298,9 @@ class ComplaintDetailScreen extends StatelessWidget {
               // Complainant Details
               _buildDetailCard(
                 title: "Complainant Details",
-                details: {"name" : complaint.complainantDetails.name,
-                "domain" : complaint.complainantDetails.domain,
-                "rating" : complaint.complainantDetails.rating,
+                details: {"name" : complaint.complainantDetails.firstName,
+                "domain" : complaint.complainantDetails.profile!.selectedDomains[0],
+                "rating" : complaint.complainantDetails.rating.toString(),
                 },
                 icon: Icons.person,
                 color: Colors.blue,
@@ -310,7 +310,7 @@ class ComplaintDetailScreen extends StatelessWidget {
               // Respondent Details
               _buildDetailCard(
                 title: "Respondent Details",
-                details: {"name": complaint.respondentDetails.name,
+                details: {"name": complaint.respondentDetails.firstName,
                 "phone" : complaint.respondentDetails.phone},
                 icon: Icons.person_outline,
                 color: Colors.red,

@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp2/providers/client_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -8,9 +11,48 @@ import '../../../models/request.dart';
 import '../../../providers/lawyer_provider.dart';
 import '../../lawyer screens/profile_view_screen.dart';
 
-class ClientProfileScreen extends StatelessWidget {
+class ClientProfileScreen extends StatefulWidget {
+
+  @override
+  State<ClientProfileScreen> createState() => _ClientProfileScreenState();
+}
+
+class _ClientProfileScreenState extends State<ClientProfileScreen> {
+
+  Client? clientData;
+
+  @override
+  void initState() {
+    super.initState();
+
+    fetchClient();
+  }
+
+
+
+  void fetchClient() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String id = auth.currentUser!.uid;
+
+    try {
+      Client? data = await Provider.of<ClientProvider>(context,listen: false).getClientById(id);
+
+      if (data != null) {
+        setState(() {
+          clientData = data;
+        });
+      } else {
+        print("No client data found for this ID.");
+      }
+    } catch (e) {
+      print("Error fetching client: $e");
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(154),
@@ -28,14 +70,7 @@ class ClientProfileScreen extends StatelessWidget {
                     automaticallyImplyLeading: false,
                     backgroundColor: Color(0xff6D4905),
                     elevation: 0, // Removes shadow
-                    actions: [
-                      IconButton(
-                        icon:
-                            Icon(Icons.settings, size: 24, color: Colors.white),
-                        onPressed: () {
-                        },
-                      ),
-                    ],
+
                     centerTitle: true,
                   ),
                 ),
@@ -53,7 +88,7 @@ class ClientProfileScreen extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 60,
                       backgroundImage: AssetImage(
-                          'assets/images/profile.png'),
+                          "assets/images/profile.png"),
                     ),
                   ),
                 ),
@@ -63,7 +98,7 @@ class ClientProfileScreen extends StatelessWidget {
         ),
       ),
 
-      body: Padding(
+      body: clientData == null ? Center(child: CircularProgressIndicator()): Padding(
         padding: const EdgeInsets.only(
             top: 65.0),
         child: Column(
@@ -75,7 +110,8 @@ class ClientProfileScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 40),
                   child: Text(
-                    "John Doe",
+                    "${clientData!.firstName} ${clientData!.lastName}"
+                    ,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -166,11 +202,28 @@ class ClientProfileScreen extends StatelessWidget {
   }
 }
 
-class LawyerSelectionScreen extends StatelessWidget {
+class LawyerSelectionScreen extends StatefulWidget {
+  @override
+  State<LawyerSelectionScreen> createState() => _LawyerSelectionScreenState();
+}
+
+class _LawyerSelectionScreenState extends State<LawyerSelectionScreen> {
+
+  List<Map<String, String>> lawyers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ClientProvider>(context,listen: false).fetchConnectedLawyers().then((lawyers) {
+      setState(() {
+        lawyers = lawyers;
+      });
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    final lawyerProvider = Provider.of<LawyerProvider>(context);
-    final lawyers = lawyerProvider.filteredLawyers;
 
     return Scaffold(
       appBar: AppBar(
@@ -203,12 +256,12 @@ class LawyerSelectionScreen extends StatelessWidget {
                             child: CircleAvatar(
                               radius: 22,
                               backgroundImage: AssetImage(
-                                lawyer.image,
+                                lawyer["image"]!,
                               ),
                             ),
                           ),
                           title: Text(
-                            lawyer.name,
+                            lawyer["name"]!,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
@@ -216,7 +269,7 @@ class LawyerSelectionScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                lawyer.domain,
+                                lawyer["domain"]!,
                                 style: TextStyle(
                                     fontSize: 14, color: Colors.grey[700]),
                               ),
@@ -226,7 +279,7 @@ class LawyerSelectionScreen extends StatelessWidget {
                                       color: Colors.amber, size: 18),
                                   SizedBox(width: 4),
                                   Text(
-                                    lawyer.rating,
+                                    lawyer["rating"]!,
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500),
@@ -247,7 +300,7 @@ class LawyerSelectionScreen extends StatelessWidget {
                   )
                 : Center(
                     child: Text(
-                      "No matches found.",
+                      "No connected lawyers found.",
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -268,44 +321,40 @@ class ResolvedCasesScreen extends StatefulWidget {
 }
 
 class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
-  final List<RequestModel> requests = [
-    RequestModel(
-      id: '1',
-      status: RequestStatus.Accepted,
-      lawyer: Lawyer(
-        id: '1',
-        name: 'John Doe',phone: "03001111211",
-        domain: 'Criminal Law',
-        image: '',
-        rating: '4.5',
-        complaintNum: 0
-      ),
-      client: Client( // Ensure a client object is added
-        id: '1',
-        name: 'Jane Smith',
-        phone: '1234567890',
-        image: '',
-        complaintNum: 0,
-      ),
-      formDetails: {
-        'name': 'Jane Smith',
-        'phone': '1234567890',
-        'issue': 'Theft Case',
-        'details': 'Details about the case...',
-      },
-    ),
-  ];
+  List<Map<String, String>>? resolveCases;
+  Map<String, bool> expandedReviews = {}; // ✅ Tracks expanded state per case
 
-  Map<String, bool> expandedReviews = {};
+  @override
+  void initState() {
+    super.initState();
+    fetchClient();
+  }
+
+  void fetchClient() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String? id = auth.currentUser?.uid;
+
+    if (id != null) {
+      List<Map<String, String>>? data =
+      await Provider.of<ClientProvider>(context, listen: false).getResolvedCases();
+      setState(() {
+        resolveCases = data;
+        expandedReviews = {for (var caseData in data ?? []) caseData["caseId"]!: false}; // ✅ Initialize expanded states
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Resolved Cases")),
-      body: ListView.builder(
-        itemCount: requests.length,
+      body: resolveCases == null
+          ? Center(child: Text("!Not have resolve cases")) // ✅ Handle loading state
+          : ListView.builder(
+        itemCount: resolveCases!.length,
         itemBuilder: (context, index) {
-          final request = requests[index];
+          final caseData = resolveCases![index];
+          String caseId = caseData["caseId"] ?? "unknown"; // ✅ Use unique identifier
 
           return Padding(
             padding: EdgeInsets.all(15),
@@ -327,12 +376,12 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Domain: ${request.lawyer.domain}',
+                          'Domain: ${caseData["domain"]}',
                           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                         ),
                         SizedBox(height: 5),
                         Text(
-                          'Lawyer: ${request.lawyer.name}',
+                          'Lawyer: ${caseData['lawyername']}',
                           style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
                         ),
                       ],
@@ -341,7 +390,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                   SizedBox(height: 10),
                   Padding(
                     padding: EdgeInsets.only(left: 20),
-                    child: Text('Issue: ${request.formDetails['issue']}'),
+                    child: Text('Issue: ${caseData['issue']}'),
                   ),
                   SizedBox(height: 5),
                   Padding(
@@ -358,17 +407,17 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              expandedReviews[request.id] = !(expandedReviews[request.id] ?? false);
+                              expandedReviews[caseId] = !(expandedReviews[caseId] ?? false); // ✅ Toggle expanded state
                             });
                           },
                           child: Icon(
-                            expandedReviews[request.id] == true ? Icons.expand_more : Icons.chevron_right,
+                            expandedReviews[caseId] == true ? Icons.expand_more : Icons.chevron_right,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  if (expandedReviews[request.id] == true) ...[
+                  if (expandedReviews[caseId] == true) ...[
                     Padding(
                       padding: EdgeInsets.only(left: 20),
                       child: Divider(thickness: 1),
@@ -382,7 +431,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                             children: [
                               ...List.generate(5, (index) {
                                 return Icon(
-                                  index < double.parse(request.lawyer.rating) ? Icons.star : Icons.star_border,
+                                  index < int.parse(caseData["rating"] ?? "0") ? Icons.star : Icons.star_border,
                                   color: Colors.yellow.shade700,
                                   size: 12,
                                 );
@@ -391,7 +440,7 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            'Excellent service! Highly recommended for criminal cases.',
+                            caseData["review"] ?? "No review available",
                             style: TextStyle(fontSize: 14),
                           ),
                         ],
@@ -408,20 +457,44 @@ class _ResolvedCasesScreenState extends State<ResolvedCasesScreen> {
   }
 }
 
+
+
+
 class EditClientProfileScreen extends StatefulWidget {
+  EditClientProfileScreen();
   @override
   _EditClientProfileScreenState createState() => _EditClientProfileScreenState();
 }
 
 class _EditClientProfileScreenState extends State<EditClientProfileScreen> {
-  String firstName = 'John';
-  String lastName = 'Doe';
-  String phoneNumber = '1234567890';
-  String email = 'johndoe@example.com';
-  String location = 'New York, USA';
-  String address = '1234 Elm Street, NY';
 
   String profileImagePath = 'assets/images/profile.png';
+
+  Client? clientData;
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchClient();
+  }
+  @override
+  void initState() {
+    super.initState();
+    fetchClient();
+  }
+
+  void fetchClient() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String? id = auth.currentUser?.uid;
+
+    if (id != null) {
+      Client? data = await Provider.of<ClientProvider>(context, listen: false).getClientById(id);
+      setState(() {
+        clientData = data;
+      });
+    }
+  }
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -436,9 +509,10 @@ class _EditClientProfileScreenState extends State<EditClientProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(title: Text("Edit Profile")),
-      body: Padding(
+      body: clientData == null ? Center(child: CircularProgressIndicator(),):Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
@@ -493,39 +567,36 @@ class _EditClientProfileScreenState extends State<EditClientProfileScreen> {
                     icon: Icon(Icons.edit,
                         color: Color(
                             0xff6F7977)),
-                    onPressed: () {
-                      print("Edit Personal Information");
+                    onPressed: () async{
+                      await Navigator.push(context, MaterialPageRoute(builder: (context)=> UpdateClientProfileScreen()));
+                      setState(() {
+                        fetchClient();
+
+                      });
                     },
                   ),
                 ],
               ),
 
               SizedBox(height: 10),
-              _buildInfoRow('First Name', firstName),
+              _buildInfoRow('First Name', clientData!.firstName),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              _buildInfoRow('Last Name', lastName),
+              _buildInfoRow('Last Name', clientData!.lastName),
+
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              _buildInfoRow('Phone Number', phoneNumber),
+              _buildInfoRow('Email', clientData!.email),
               SizedBox(height: 7),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
-              _buildInfoRow('Email', email),
+              _buildInfoRow('Address', clientData!.profile!.address),
               SizedBox(height: 7),
-              Divider(thickness: 1,),
-              SizedBox(height: 7),
-              _buildInfoRow('Location', location),
-              SizedBox(height: 7),
-              Divider(thickness: 1,),
-              SizedBox(height: 7),
-
-              _buildInfoRow('Address', address),
               Divider(thickness: 1,),
               SizedBox(height: 7),
 
@@ -536,7 +607,7 @@ class _EditClientProfileScreenState extends State<EditClientProfileScreen> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String? value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -546,13 +617,174 @@ class _EditClientProfileScreenState extends State<EditClientProfileScreen> {
               fontSize: 14,
               fontFamily: "Open Sans",
             )),
-        Text(value,
+        Text(value ?? 'N/A', // Default value for null
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               fontFamily: "Open Sans",
             )),
       ],
+    );
+  }
+
+}
+
+
+
+class UpdateClientProfileScreen extends StatefulWidget {
+  @override
+  _UpdateClientProfileScreenState createState() =>
+      _UpdateClientProfileScreenState();
+}
+
+class _UpdateClientProfileScreenState extends State<UpdateClientProfileScreen> {
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+
+  String profileImagePath = 'assets/images/profile.png';
+  String userId = '';
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchClient();
+  }
+
+  Future<void> fetchClient() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      userId = user.uid;
+
+      DocumentSnapshot clientSnapshot =
+      await FirebaseFirestore.instance.collection('clients').doc(userId).get();
+
+      if (clientSnapshot.exists) {
+        Map<String, dynamic> clientData = clientSnapshot.data() as Map<String, dynamic>;
+
+        setState(() {
+          firstNameController.text = clientData['firstName'] ?? '';
+          lastNameController.text = clientData['lastName'] ?? '';
+          emailController.text = clientData['email'] ?? '';
+          addressController.text = clientData['profile']?['address'] ?? '';
+        });
+      }
+    }
+  }
+
+  Future<void> updateClientProfile() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await FirebaseFirestore.instance.collection('clients').doc(userId).update({
+      'firstName': firstNameController.text,
+      'lastName': lastNameController.text,
+      'email': emailController.text,
+      'profile.address': addressController.text,
+    });
+
+    setState(() {
+      isLoading = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Center(child: Text("Profile Updated Successfully!",style: TextStyle(color: Colors.white),)),
+      backgroundColor: Colors.brown,
+    ));
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        profileImagePath = image.path;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Edit Profile")),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage(profileImagePath),
+                ),
+              ),
+              SizedBox(height: 15),
+              Center(
+                child: TextButton(
+                  onPressed: _pickImage,
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.brown,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                  ),
+                  child: Text("Change Image", style: TextStyle(fontSize: 16)),
+                ),
+              ),
+              SizedBox(height: 20),
+              _buildTextField("First Name", firstNameController),
+              _buildTextField("Last Name", lastNameController),
+              _buildTextField("Email", emailController),
+              _buildTextField("Address", addressController),
+              SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity, // Full width
+                child: TextButton(
+                  onPressed: updateClientProfile,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.brown, // Background color
+                    foregroundColor: Colors.white, // Text color
+                    padding: EdgeInsets.symmetric(vertical: 12), // Adjust padding
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5), // Reduced border radius
+                    ),
+                  ),
+                  child: Text(
+                    "Save",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          fillColor: Colors.brown.shade100,
+          filled: true
+        ),
+      ),
     );
   }
 }

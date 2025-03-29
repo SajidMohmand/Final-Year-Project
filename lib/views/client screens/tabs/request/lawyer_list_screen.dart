@@ -67,7 +67,7 @@ class LawyerListScreen extends StatelessWidget {
                       ),
                     ),
                     title: Text(
-                      lawyer.name,
+                      lawyer.firstName,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -75,7 +75,7 @@ class LawyerListScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          lawyer.domain,
+                          lawyer.profile!.selectedDomains[0],
                           style: TextStyle(
                               fontSize: 14, color: Colors.grey[700]),
                         ),
@@ -85,7 +85,7 @@ class LawyerListScreen extends StatelessWidget {
                                 color: Colors.amber, size: 18),
                             SizedBox(width: 4),
                             Text(
-                              lawyer.rating,
+                              lawyer.rating as String,
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500),
@@ -138,7 +138,7 @@ class LawyerListScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          lawyer.name,
+                          lawyer.firstName,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -146,7 +146,7 @@ class LawyerListScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          lawyer.domain,
+                          lawyer.profile!.selectedDomains[0],
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey.shade700,
@@ -157,7 +157,7 @@ class LawyerListScreen extends StatelessWidget {
                             Icon(Icons.star, color: Colors.amber, size: 18),
                             SizedBox(width: 4),
                             Text(
-                              lawyer.rating,
+                              lawyer.rating.toString(),
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

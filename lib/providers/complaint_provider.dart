@@ -10,8 +10,8 @@ class ComplaintProvider with ChangeNotifier {
       id: Uuid().v4(),
       complaintNum: 0,
       complainantType: "Client",
-      complainantDetails: Lawyer(id: "1", name: "sajid",phone: "03001111211" ,domain: "cyber law", image: "assets/images/lawyer1.png", rating: "4.5",complaintNum: 0),
-      respondentDetails: Client(id: "234", name: "Jonhy capital",phone: "03002343233", image: "assets/images/lawyer3.png",complaintNum: 0),
+      complainantDetails: Lawyer(id: "1", firstName: "sajid",lastName: "ALI",phone: "03001111211" , email:"",image: "assets/images/lawyer1.png", complaintNum: 0, rating: 3),
+      respondentDetails: Client(id: "234", firstName: "Jonhy capital",lastName: "",phone: "03002343233",email:"", image: "assets/images/lawyer3.png",complaintNum: 0),
       complaintDetails: {
         "issue": "Delayed case proceedings",
         "details": "The lawyer has not been responding to calls and emails for the past two weeks.",

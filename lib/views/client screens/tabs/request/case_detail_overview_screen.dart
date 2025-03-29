@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp2/models/lawyer.dart';
 import 'package:fyp2/providers/lawyer_provider.dart';
@@ -39,7 +40,7 @@ class ClientCaseDetailOverviewScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildLawyerProfile(lawyer!),
+                      _buildLawyerProfile(lawyer as Lawyer),
                       SizedBox(height: 20),
             
                       Divider(thickness: 1, color: Colors.grey),
@@ -75,11 +76,12 @@ class ClientCaseDetailOverviewScreen extends StatelessWidget {
             Provider.of<FormProvider>(context, listen: false)
                 .saveFormDetails(name, phone, issue, details);
 
-            final lawyer = Provider.of<LawyerProvider>(context,listen: false).getLawyerById(id);
-            Provider.of<RequestProvider>(context, listen: false).addRequest(name, phone, issue, details,lawyer!);
+            User? user = FirebaseAuth.instance.currentUser;
+            String? clientId =  user?.uid;
+            Provider.of<RequestProvider>(context, listen: false).addRequest(clientId!,name, phone, issue, details,id);
 
 
-            showDialog(
+              showDialog(
               context: context,
               builder: (BuildContext dialogContext) {
                 Future.delayed(Duration(seconds: 2), () {
@@ -176,11 +178,11 @@ class ClientCaseDetailOverviewScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  lawyer.name,
+                  lawyer.firstName,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  lawyer.domain,
+                  lawyer.profile!.selectedDomains[0],
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 SizedBox(height: 5),

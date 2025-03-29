@@ -24,6 +24,14 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
     'Canada': ['Toronto', 'Vancouver', 'Montreal'],
   };
 
+  void saveData(){
+    Provider.of<ProfileProvider>(context,listen: false).updateProfile(gender: selectedGender,
+    country: selectedCountry,
+      city: selectedCity,
+    );
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileProvider = Provider.of<ProfileProvider>(context);
@@ -156,6 +164,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate() && selectedGender != null) {
+                          saveData();
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => SelectDomainScreen()),

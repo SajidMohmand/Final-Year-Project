@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -52,10 +53,16 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
           },
           codeSent: (String verificationId, int? resendToken) {
             print("Code sent! Verification ID: $verificationId");
+            final list = [
+              firstNameController.text.toString(),
+              lastNameController.text.toString(),
+              emailController.text.toString(),
+              mobileController.text.toString(),
+            ];
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => VerificationScreen(verificationId: verificationId,role: widget.role,),
+                builder: (context) => VerificationScreen(verificationId: verificationId,role: widget.role,list: list),
               ),
             );
           },
@@ -117,30 +124,52 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     return null;
   }
 
+
   void handleLogin(UserCredential? userCredential) {
     if (userCredential != null) {
-      if(widget.role.substring(0,2) == "rL"){
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfileSetupScreen(),
-          ),
-        );
-      }else{
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ClientHomeScreen(),
-          ),
-        );
-      }
+      User? user = userCredential.user;
 
+      if (user != null) {
+        // Firestore instance
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+        // Define user data
+        Map<String, dynamic> userData = {
+          "uid": user.uid,
+          "email": user.email,
+          "role": widget.role, // Assuming role is from the widget
+          "createdAt": FieldValue.serverTimestamp(),
+        };
+
+        // Store user data in Firestore
+        firestore.collection("users").doc(user.uid).set(userData).then((_) {
+          // Navigate to the correct screen
+          if (widget.role.substring(0, 2) == "rL") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileSetupScreen()),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ClientHomeScreen()),
+            );
+          }
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Failed to save user data: $error")),
+          );
+        });
+      }
     } else {
-     ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Login failed. Please try again.")),
       );
     }
   }
+
+
+
   Future<void> handleGoogleSignIn() async {
     UserCredential? userCredential = await signInWithGoogle();
     if (userCredential == null) {
@@ -168,13 +197,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20),
-            Form(
-              key: _formKey,
-              child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              Form(
+                key: _formKey,
                 child: Column(
                   children: [
                     _buildTextField("First Name", firstNameController,TextInputType.text, isRequired: true),
@@ -199,11 +228,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             : Text("Continue", style: TextStyle(color: Colors.white, fontSize: 18)),
                       ),
                     ),
-
+          
                     SizedBox(height: 20),
                     Text("Or",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w100),),
                     SizedBox(height: 20),
-
+          
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -212,17 +241,14 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         // _buildSocialButton("Facebook", "assets/images/facebook.png", handleFacebookSignIn),
                       ],
                     ),
-
-
+          
+          
                   ],
                 ),
               ),
-            ),
-            SizedBox(height: 60),
-
-            Expanded(
-              flex: 1,
-              child: Center(
+              SizedBox(height: 60),
+          
+              Center(
                 child: GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
@@ -233,8 +259,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

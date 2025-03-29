@@ -40,7 +40,7 @@ class ClientListScreen extends StatelessWidget {
                       backgroundImage: AssetImage(client.image),
                     ),
                     title: Text(
-                      client.name,
+                      client.firstName,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -102,7 +102,7 @@ class ClientListScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(client.name,
+                        Text(client.firstName,
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold)),
                         Text(client.phone, style: TextStyle(fontSize: 16)),
